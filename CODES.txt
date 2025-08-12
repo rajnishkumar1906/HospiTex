@@ -1,0 +1,16 @@
+<PatientNavbar />
+      <div className="mt-20 px-4">
+        <Routes>
+
+          {/* Code part - A */}
+          {isHomePage && <Route path="*" element={<HomePage />} />}
+
+          <Route path="/patientReg" element={<PatientRegistration />} />
+          <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/diagnostic-services" element={<DiagnosticServices />} />
+          <Route path="/appointment-services" element={<AppointmentServices />} />
+          <Route path="/ambulance-services" element={<AmbulanceServices />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>

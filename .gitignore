@@ -1,0 +1,13 @@
+# Dependency directories
+Hospitex-Server/node_modules/
+Hospitex-Ui/node_modules/
+
+# Files created by package managers
+package-lock.json
+
+# Log files
+*.log
+
+# Sensitive configuration files (if any)
+.env
+.env.local
