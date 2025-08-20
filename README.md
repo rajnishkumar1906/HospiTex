@@ -1,12 +1,73 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🏥 HospiTex
 
-Currently, two official plugins are available:
+HospiTex is a **MERN-based Hospital Management System** with role-based dashboards and an integrated AI chatbot **MediBot**.
+It streamlines hospital operations by connecting patients, doctors, diagnostics, and ambulance services in one platform.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## ✨ Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* 👨‍⚕️ **Role-Based Dashboards**
+
+  * Patient: Book appointments, request ambulance, access diagnostics.
+  * Doctor: Manage appointments and patient records.
+  * Diagnostic: Handle test bookings & upload reports.
+  * Ambulance: Manage ambulance availability.
+
+* 🤖 **MediBot Chatbot** – Provides instant hospital assistance & FAQs.
+
+* 🔗 **Smooth Navigation** – React Router DOM with scroll-to-section support.
+
+* 💾 **Backend APIs** – Built with Node.js, Express & MongoDB (Atlas/Compass).
+
+---
+
+## 🛠 Tech Stack
+
+* **Frontend** → React.js, Tailwind CSS, React Router
+* **Backend** → Node.js, Express.js
+* **Database** → MongoDB
+* **Chatbot** → MediBot (custom AI assistant)
+
+---
+
+## 🚀 Getting Started
+
+1️⃣ Clone the repo:
+
+```bash
+git clone https://github.com/your-username/HospiTex.git
+cd HospiTex
+```
+
+2️⃣ Install dependencies & run backend:
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+3️⃣ Run frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 📌 Roadmap
+
+* 🔐 Role-based authentication (JWT)
+* 📩 Appointment reminders via email/SMS
+* 💳 Online payments for services
+* 🤖 Advanced MediBot with GPT integration
+
+---
+
+## 📜 License
+
+Licensed under the **MIT License**.
