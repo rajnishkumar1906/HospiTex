@@ -28,7 +28,7 @@ const Diagnostic = () => {
             Experience world-class diagnostic facilities with 24/7 support and instant reporting.
           </p>
           <Link
-            to="/diagnostic-services"
+            to="/patient-dashboard/diagnostic-services"
             className="inline-block bg-blue-700 text-white px-6 py-3 rounded-xl shadow hover:bg-blue-800 transition"
           >
             Explore Services
@@ -72,7 +72,7 @@ const Diagnostic = () => {
         <h4 className="text-2xl font-semibold mb-2">Need a test?</h4>
         <p className="mb-4">Book a diagnostic test today. Quick, simple & reliable.</p>
         <Link
-          to="/patientReg"
+          to="/patient-dashboard/patientReg"
           className="bg-white text-blue-800 font-semibold px-5 py-2 rounded-full hover:bg-blue-100 transition"
         >
           Register Now

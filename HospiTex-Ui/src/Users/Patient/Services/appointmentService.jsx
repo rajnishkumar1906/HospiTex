@@ -53,7 +53,7 @@ const AppointmentServices = () => {
 
       <div className="text-center mt-16">
         <Link
-          to="/patientReg"
+          to="/patient-dashboard/patientReg"
           className="bg-green-700 text-white px-8 py-3 rounded-full shadow hover:bg-green-800 transition duration-300"
         >
           Book Appointment Now

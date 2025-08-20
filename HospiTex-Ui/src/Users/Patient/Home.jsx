@@ -50,7 +50,7 @@ const Home = () => {
               className="bg-white text-center p-6 rounded-xl shadow hover:shadow-lg transition border hover:scale-105"
             >
               <h3 className="text-xl font-semibold text-blue-700">{service.title}</h3>
-              <p className="text-gray-600 mt-2">Click to know more</p>
+              <p className="text-gray-600 mt-2 font-semibold" >Go to service</p>
             </Link>
           ))}
         </div>

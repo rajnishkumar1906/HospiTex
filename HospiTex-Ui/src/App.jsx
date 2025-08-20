@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
-// Patient imports
+// ✅ Patient Imports
 import PatientNavbar from './Users/Patient/PatientNavbar';
 import HomePage from './Users/Patient/HomePage';
 import PatientRegistration from './Users/Patient/PatientRegistration';
@@ -10,14 +10,27 @@ import DiagnosticServices from './Users/Patient/Services/DiagnosticServices';
 import AppointmentServices from './Users/Patient/Services/appointmentService';
 import AmbulanceServices from './Users/Patient/Services/AmbulanceServices';
 
-// Doctor imports
+// ✅ Doctor Imports
 import DoctorNavbar from './Users/Doctor/DoctorNavbar';
 import DoctorHomePage from './Users/Doctor/DoctorHomePage';
+import DoctorAppointmentServices from './Users/Doctor/DoctorAppointmentServices';
+import DoctorPatientRecordsServices from './Users/Doctor/DoctorPatientRecordsServices';
+
+// ✅ Diagnostic Imports (new)
+import DiagnosticNavbar from './Users/Diagnostic/DiagnosticNavbar';
+import DiagnosticHomePage from './Users/Diagnostic/DiagnosticHomePage';
+import DiagnosticReportsServices from './Users/Diagnostic/DiagnosticReportsServices';
+import DiagnosticTestsServices from './Users/Diagnostic/DiagnosticTestsServices';
 
 function App() {
   const location = useLocation();
 
-  // Patient routes home pages
+  // ✅ Role-based route detection
+  const isPatientRoute = location.pathname.startsWith('/patient-dashboard');
+  const isDoctorRoute = location.pathname.startsWith('/doctor-dashboard');
+  const isDiagnosticRoute = location.pathname.startsWith('/diagnostic-dashboard');
+
+  // ✅ Allowed home paths
   const patientHomePaths = [
     '/patient-dashboard',
     '/patient-dashboard/appointment-booking',
@@ -25,65 +38,77 @@ function App() {
     '/patient-dashboard/ambulance',
     '/patient-dashboard/contacts',
   ];
-  const isPatientHome = patientHomePaths.includes(location.pathname);
 
-  // Doctor routes home pages (all these paths load the SPA DoctorHomePage)
   const doctorHomePaths = [
     '/doctor-dashboard',
-    '/doctor-dashboard/appointments',
-    '/doctor-dashboard/patient-records',
+    '/doctor-dashboard/booked-appointments',
+    '/doctor-dashboard/records',
+    '/doctor-dashboard/doctor-contacts',
     '/doctor-dashboard/profile',
   ];
-  const isDoctorHome = doctorHomePaths.includes(location.pathname);
 
-  // Determine if we are in patient or doctor section based on path prefix
-  const isPatientRoute = location.pathname.startsWith('/patient-dashboard');
-  const isDoctorRoute = location.pathname.startsWith('/doctor-dashboard');
+  const diagnosticHomePaths = [
+    '/diagnostic-dashboard',
+    '/diagnostic-dashboard/reports-services',
+    '/diagnostic-dashboard/tests-services',
+    '/diagnostic-dashboard/contact',
+    '/diagnostic-dashboard/profile',
+  ];
+
+  // ✅ Check if current route is home section
+  const isPatientHome = patientHomePaths.includes(location.pathname);
+  const isDoctorHome = doctorHomePaths.includes(location.pathname);
+  const isDiagnosticHome = diagnosticHomePaths.includes(location.pathname);
 
   return (
-    <div className="min-h-screen flex flex-col scroll-smooth bg-gray-50">
-
-      {/* Show correct Navbar */}
+    <div className="min-h-screen flex flex-col bg-gray-50 scroll-smooth">
+      {/* ✅ Navbar logic */}
       {isPatientRoute && <PatientNavbar />}
       {isDoctorRoute && <DoctorNavbar />}
+      {isDiagnosticRoute && <DiagnosticNavbar />}
 
-      <div className="mt-20 px-4">
+      <div className={isPatientRoute || isDoctorRoute || isDiagnosticRoute ? 'mt-20' : ''}>
         <Routes>
-
-          {/* Patient Routes */}
+          {/* ======================= Patient Routes ======================= */}
           {isPatientRoute && (
             <>
-              {isPatientHome && <Route path="/patient-dashboard/*" element={<HomePage />} />}
-
+              {isPatientHome && (
+                <Route path="/patient-dashboard/*" element={<HomePage />} />
+              )}
               <Route path="/patient-dashboard/patientReg" element={<PatientRegistration />} />
               <Route path="/patient-dashboard/userprofile" element={<UserProfile />} />
               <Route path="/patient-dashboard/diagnostic-services" element={<DiagnosticServices />} />
               <Route path="/patient-dashboard/appointment-services" element={<AppointmentServices />} />
               <Route path="/patient-dashboard/ambulance-services" element={<AmbulanceServices />} />
-
-              {/* Redirect unmatched patient routes to patient home */}
-              <Route
-                path="/patient-dashboard/*"
-                element={<Navigate to="/patient-dashboard" replace />}
-              />
+              <Route path="/patient-dashboard/*" element={<Navigate to="/patient-dashboard" replace />} />
             </>
           )}
 
-          {/* Doctor Routes */}
+          {/* ======================= Doctor Routes ======================= */}
           {isDoctorRoute && (
             <>
-              {/* All doctor home paths handled inside DoctorHomePage via scrolling */}
-              {isDoctorHome && <Route path="/doctor-dashboard/*" element={<DoctorHomePage />} />}
-
-              {/* Redirect unmatched doctor routes to doctor home */}
-              <Route
-                path="/doctor-dashboard/*"
-                element={<Navigate to="/doctor-dashboard" replace />}
-              />
+              {isDoctorHome && (
+                <Route path="/doctor-dashboard/*" element={<DoctorHomePage />} />
+              )}
+              <Route path="/doctor-dashboard/appointment-services" element={<DoctorAppointmentServices />} />
+              <Route path="/doctor-dashboard/patient-records" element={<DoctorPatientRecordsServices />} />
+              <Route path="/doctor-dashboard/*" element={<Navigate to="/doctor-dashboard" replace />} />
             </>
           )}
 
-          {/* Catch-all redirect: if route doesn't match any above */}
+          {/* ======================= Diagnostic Routes ======================= */}
+          {isDiagnosticRoute && (
+            <>
+              {isDiagnosticHome && (
+                <Route path="/diagnostic-dashboard/*" element={<DiagnosticHomePage />} />
+              )}
+              <Route path="/diagnostic-dashboard/reports-services" element={<DiagnosticReportsServices />} />
+              <Route path="/diagnostic-dashboard/tests-services" element={<DiagnosticTestsServices />} />
+              <Route path="/diagnostic-dashboard/*" element={<Navigate to="/diagnostic-dashboard" replace />} />
+            </>
+          )}
+
+          {/* ======================= Default Route ======================= */}
           <Route path="*" element={<Navigate to="/patient-dashboard" replace />} />
         </Routes>
       </div>

@@ -1,0 +1,34 @@
+AuthContext.jsx - React Context to hold user info and auth functions (login, logout, check user type)
+
+RequireAuth.jsx — A component wrapper that protects routes, redirects unauthorized or unauthenticated users
+
+Login.jsx — Login page (can have separate login forms for patient and doctor or a combined one)
+
+Register.jsx — Registration page if you allow signups
+
+authService.js — Functions to simulate backend login/auth logic (for now, hardcoded users or mock API)
+
+
+
+
+| File              | Purpose                                                                          |
+| ----------------- | -------------------------------------------------------------------------------- |
+| `AuthContext.jsx` | Hold user state, expose `login()`, `logout()`, and current user info             |
+| `RequireAuth.jsx` | Protect routes: if user not logged in or wrong role, redirect to login/dashboard |
+| `Login.jsx`       | Show login form, call `login()` from context to set user state                   |
+| `Register.jsx`    | Optional, show signup form                                                       |
+| `authService.js`  | Mock or real API calls for login and user validation                             |
+
+
+How the flow will look
+=> User visits site
+
+=> If user is not logged in → redirected to login page
+ 
+=> User submits login form → login() updates user info in context
+ 
+=> Based on user role (patient or doctor), redirect to respective dashboard
+ 
+=> RequireAuth protects dashboard routes; users cannot access pages unauthorized for their role
+ 
+=> Navbar and pages render based on user role (your existing code already handles this nicely)

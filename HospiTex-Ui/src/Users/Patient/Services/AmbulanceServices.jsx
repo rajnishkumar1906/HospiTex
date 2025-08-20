@@ -85,7 +85,7 @@ const AmbulanceServices = () => {
         <h2 className="text-4xl font-extrabold text-red-700">Need Emergency Help?</h2>
         <p className="text-lg text-gray-600">Call our 24x7 ambulance helpline or book instantly online.</p>
         <Link
-          to="/contact"
+          to="/patient-dashboard/contact"
           className="inline-block bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg font-semibold rounded-full transition"
         >
           Book Ambulance Now
