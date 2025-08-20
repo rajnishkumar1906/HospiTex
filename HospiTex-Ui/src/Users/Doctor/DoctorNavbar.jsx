@@ -11,6 +11,7 @@ function DoctorNavbar() {
           <p className="text-green-900 text-3xl font-bold">Tex</p>
         </div>
 
+        {/* Navigation Links */}
         <div className="flex flex-row items-center space-x-6">
           <Link
             to="/doctor-dashboard/"
@@ -20,17 +21,10 @@ function DoctorNavbar() {
           </Link>
 
           <Link
-            to="/doctor-dashboard/appointments"
+            to="/doctor-dashboard/doctor-contacts"
             className="text-green-900 font-medium px-2 py-2 transition duration-200 hover:text-green-800 hover:scale-105"
           >
-            Appointments
-          </Link>
-
-          <Link
-            to="/doctor-dashboard/patient-records"
-            className="text-green-900 font-medium px-2 py-2 transition duration-200 hover:text-green-800 hover:scale-105"
-          >
-            Patient Records
+            Contact
           </Link>
 
           <Link

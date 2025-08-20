@@ -1,67 +1,48 @@
-import React, { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import DoctorHome from "./DoctorHome";
+import DoctorAppointmentsOverview from "./DoctorAppointmentsOverview";
+import DoctorPatientRecordsOverview from "./DoctorPatientRecordsOverview";
+import DoctorContacts from "./DoctorContacts";
+import MediBot from "../../Medibot/MediBot";
 
-import DoctorHome from './DoctorHome';
-import AppointmentManagement from './AppointmentManagement';
-import PatientRecords from './PatientRecords';
-import DoctorProfile from './DoctorProfile';
-import MediBot from '../../Medibot/MediBot';
-
-function DoctorHomePage() {
-  const homeRef = useRef(null);
-  const appointmentsRef = useRef(null);
-  const patientRecordsRef = useRef(null);
-  const profileRef = useRef(null);
-
+const DoctorHomePage = () => {
   const location = useLocation();
+  const appointmentsRef = useRef(null);
+  const recordsRef = useRef(null);
+  const contactsRef = useRef(null);
 
   useEffect(() => {
-    const scrollToRef = (ref) => {
-      if (ref && ref.current) {
-        ref.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    };
-
     switch (location.pathname) {
-      case '/doctor-dashboard':
-      case '/doctor-dashboard/':
-        scrollToRef(homeRef);
+      case "/doctor-dashboard/booked-appointments":
+        appointmentsRef.current?.scrollIntoView({ behavior: "smooth" });
         break;
-      case '/doctor-dashboard/appointments':
-        scrollToRef(appointmentsRef);
+      case "/doctor-dashboard/records":
+        recordsRef.current?.scrollIntoView({ behavior: "smooth" });
         break;
-      case '/doctor-dashboard/patient-records':
-        scrollToRef(patientRecordsRef);
-        break;
-      case '/doctor-dashboard/profile':
-        scrollToRef(profileRef);
+      case "/doctor-dashboard/doctor-contacts":
+        contactsRef.current?.scrollIntoView({ behavior: "smooth" });
         break;
       default:
-        scrollToRef(homeRef);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [location]);
+  }, [location.pathname]);
 
   return (
-    <>
-      <div ref={homeRef}>
-        <DoctorHome />
-      </div>
-
+    <div>
+      <DoctorHome />
       <div ref={appointmentsRef}>
-        <AppointmentManagement />
+        <DoctorAppointmentsOverview />
       </div>
-
-      <div ref={patientRecordsRef}>
-        <PatientRecords />
+      <div ref={recordsRef}>
+        <DoctorPatientRecordsOverview />
       </div>
-
-      <div ref={profileRef}>
-        <DoctorProfile />
+      <div ref={contactsRef}>
+        <DoctorContacts />
       </div>
-
-      <MediBot />
-    </>
+      <MediBot/>
+    </div>
   );
-}
+};
 
 export default DoctorHomePage;
