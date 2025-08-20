@@ -8,6 +8,6 @@ package-lock.json
 # Log files
 *.log
 
-# Sensitive configuration files (if any)
-.env
-.env.local
+# # Sensitive configuration files (if any)
+# .env
+# .env.local
