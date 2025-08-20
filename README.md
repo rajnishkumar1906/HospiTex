@@ -1,12 +1,3 @@
-Got it ✅ You want **one document (README.md)** that contains:
-
-1. 📂 **Folder structure**
-2. 📜 **Description of what’s inside each folder/file**
-
-Here’s a **ready-made `README.md`** for your HospiTex project with **folder structure + content explained**:
-
----
-
 # 🏥 HospiTex - Smart Hospital Management System
 
 HospiTex is a **MERN-based hospital management system** providing dashboards for **patients, doctors, diagnostics, and ambulance services**, along with an AI chatbot **MediBot**.
@@ -144,6 +135,3 @@ HospiTex/
    ```
 
 ---
-
-✅ This README **explains the folder structure AND content of each folder**.
-Do you want me to also **add code snippets for key files (like `server.js`, `App.jsx`) inside this README** so recruiters can directly see sample code?
