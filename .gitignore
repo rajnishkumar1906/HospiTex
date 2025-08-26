@@ -3,6 +3,7 @@ Hospitex-Server/node_modules/
 Hospitex-Ui/node_modules/
 Hospitex-Ui/.env
 Hospitex-Server/.env
+
 # Files created by package managers
 package-lock.json
 
