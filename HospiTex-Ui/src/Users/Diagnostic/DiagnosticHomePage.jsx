@@ -6,6 +6,7 @@ import DiagnosticReportsOverview from "./DiagnosticReportsOverview";
 import DiagnosticTestsOverview from "./DiagnosticTestsOverview";
 import DiagnosticContact from "./DiagnosticContact";
 import MediBot from "../../Medibot/MediBot";
+import DiagnosticNavbar from './DiagnosticNavbar';
 
 const DiagnosticHomePage = () => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const DiagnosticHomePage = () => {
 
   return (
     <div>
+      <DiagnosticNavbar/>
       <DiagnosticHome scrollToSection={scrollToSection} />
 
       <div ref={reportsRef}>

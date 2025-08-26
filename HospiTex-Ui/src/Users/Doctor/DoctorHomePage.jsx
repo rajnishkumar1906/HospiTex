@@ -5,6 +5,7 @@ import DoctorAppointmentsOverview from "./DoctorAppointmentsOverview";
 import DoctorPatientRecordsOverview from "./DoctorPatientRecordsOverview";
 import DoctorContacts from "./DoctorContacts";
 import MediBot from "../../Medibot/MediBot";
+import DoctorNavbar from './DoctorNavbar';
 
 const DoctorHomePage = () => {
   const location = useLocation();
@@ -30,6 +31,7 @@ const DoctorHomePage = () => {
 
   return (
     <div>
+      <DoctorNavbar/>
       <DoctorHome />
       <div ref={appointmentsRef}>
         <DoctorAppointmentsOverview />

@@ -7,6 +7,7 @@ import Ambulance from './Ambulance';
 import Contacts from './Contacts';
 import MediBot from '../../Medibot/MediBot';
 import BookAppointment from './BookAppointment';
+import PatientNavbar from './PatientNavbar'
 
 function HomePage() {
   const homeRef = useRef(null);
@@ -47,6 +48,7 @@ function HomePage() {
 
   return (
     <>
+      <PatientNavbar/>
       <div ref={homeRef}>
         <Home />
       </div>

@@ -1,0 +1,8 @@
+<svg width="400" height="160" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stylized H Logo -->
+  <rect x="30" y="40" width="40" height="80" fill="#20395A"/>
+  <rect x="70" y="60" width="30" height="30" fill="#20395A"/>
+  <rect x="70" y="90" width="30" height="30" fill="#20395A"/>
+  <!-- HospiTex Text -->
+  <text x="120" y="110" font-family="Arial, Helvetica, sans-serif" font-size="60" fill="#20395A" font-weight="bold">HospiTex</text>
+</svg>
