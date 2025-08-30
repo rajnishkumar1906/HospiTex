@@ -10,6 +10,8 @@ import BookAppointment from './BookAppointment';
 import PatientNavbar from './PatientNavbar'
 
 function HomePage() {
+  // These below refs are sticked to each component 
+  // Here each Ref's is carrying the component
   const homeRef = useRef(null);
   const appointmentRef = useRef(null);
   const diagnosticRef = useRef(null);
@@ -19,6 +21,7 @@ function HomePage() {
   const location = useLocation();
 
   useEffect(() => {
+    // Component passes to the function will be reached  
     const scrollToRef = (ref) => {
       if (ref && ref.current) {
         ref.current.scrollIntoView({ behavior: 'smooth' });
@@ -49,22 +52,27 @@ function HomePage() {
   return (
     <>
       <PatientNavbar/>
+      {/* homeRef is sticked to Home component */}
       <div ref={homeRef}>
         <Home />
       </div>
 
+      {/* appointmentRef is sticked to BookAppointment component */}
       <div ref={appointmentRef}>
         <BookAppointment/>
       </div>
 
+      {/* diagnosticRef is sticked to Diagnostic component */}
       <div ref={diagnosticRef}>
         <Diagnostic />
       </div>
 
+      {/* ambulanceRef is sticked to Ambulance  component*/}
       <div ref={ambulanceRef}>
         <Ambulance />
       </div>
 
+      {/* contactRef is sticked to Contat component */}
       <div ref={contactRef}>
         <Contacts />
       </div>

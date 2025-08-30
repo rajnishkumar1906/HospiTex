@@ -1,29 +1,28 @@
 {
   "name": "hospitex-server",
   "version": "1.0.0",
-  "description": "HospiTex server API",
+  "description": "",
   "main": "server.js",
-  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon server.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon run server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "corn": "^0.0.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.17.2",
-    "morgan": "^1.10.1",
-    "path": "^0.12.7",
-    "url": "^0.11.4",
-    "winston": "^3.17.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+    "mongo": "^0.1.0",
+    "mongoose": "^8.18.0",
+    "nodemailer": "^7.0.6",
+    "nodemon": "^3.1.10",
+    "react-toastify": "^11.0.5"
   }
 }

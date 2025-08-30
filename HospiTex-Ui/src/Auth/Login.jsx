@@ -6,32 +6,26 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const {
-    userState,
-    setUserState,
-    isLoggedIn,
-    setIsLoggedIn,
-    userType,
-    setUserType,
-    users,
-    setUsers,
-    setCurrentUser
-  } = useContext(AppContext);
+  const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, setUser } = useContext(AppContext);
 
+  const [userState, setUserState] = useState('Login'); // Login or SignUp
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedType, setSelectedType] = useState('Select');
 
+  const [users, setUsers] = useState([]); // Temporary users storage
+
   // Redirect if already logged in
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!IsLoggedIn) return;
 
-    if (userType === 'Patient') navigate('/patient-dashboard');
-    else if (userType === 'Doctor') navigate('/doctor-dashboard');
-    else if (userType === 'Diagnostic') navigate('/diagnostic-dashboard');
-  }, [isLoggedIn, userType, navigate]);
+    if (UserRole === 'Patient') navigate('/patient-dashboard');
+    else if (UserRole === 'Doctor') navigate('/doctor-dashboard');
+    else if (UserRole === 'Diagnostic') navigate('/diagnostic-dashboard');
+  }, [IsLoggedIn, UserRole, navigate]);
 
+  // SignUp handler
   const handleSignUp = (e) => {
     e.preventDefault();
 
@@ -44,22 +38,23 @@ const Login = () => {
     const newUser = { name, email, password, type: selectedType };
     setUsers([...users, newUser]);
     setIsLoggedIn(true);
-    setUserType(selectedType);
-    setCurrentUser(newUser);
+    setUserRole(selectedType);
+    setUser(newUser); // Update context user
     toast.success("SignUp successful");
 
-    // reset form
+    // Reset form
     setName('');
     setEmail('');
     setPassword('');
     setSelectedType('Select');
 
-    // redirect
+    // Redirect
     if (selectedType === 'Patient') navigate('/patient-dashboard');
     else if (selectedType === 'Doctor') navigate('/doctor-dashboard');
     else if (selectedType === 'Diagnostic') navigate('/diagnostic-dashboard');
   };
 
+  // Login handler
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -67,11 +62,10 @@ const Login = () => {
     if (!user) return toast.error("Invalid credentials");
 
     setIsLoggedIn(true);
-    setUserType(user.type);
-    setCurrentUser(user);
+    setUserRole(user.type);
+    setUser(user); // Update context user
     toast.success("Login successful");
 
-    // reset form
     setEmail('');
     setPassword('');
 
@@ -81,7 +75,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-300 via-green-300 to-indigo-300  p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-300 via-green-300 to-indigo-300 p-4">
       <ToastContainer />
       <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md flex flex-col items-center">
         <h1 className="text-4xl font-extrabold text-blue-600 mb-6">HospiTex</h1>
@@ -115,10 +109,10 @@ const Login = () => {
                 value={selectedType}
                 onChange={e => setSelectedType(e.target.value)}
               >
-                <option>Select</option>
-                <option>Patient</option>
-                <option>Doctor</option>
-                <option>Diagnostic</option>
+                <option value="Select">Select</option>
+                <option value="Patient">Patient</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Diagnostic">Diagnostic</option>
               </select>
               <button
                 onClick={handleSignUp}

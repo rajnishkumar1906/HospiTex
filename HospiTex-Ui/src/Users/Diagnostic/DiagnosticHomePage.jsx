@@ -6,39 +6,45 @@ import DiagnosticReportsOverview from "./DiagnosticReportsOverview";
 import DiagnosticTestsOverview from "./DiagnosticTestsOverview";
 import DiagnosticContact from "./DiagnosticContact";
 import MediBot from "../../Medibot/MediBot";
-import DiagnosticNavbar from './DiagnosticNavbar';
 
 const DiagnosticHomePage = () => {
   const location = useLocation();
 
+  const homeRef = useRef(null);
   const reportsRef = useRef(null);
   const testsRef = useRef(null);
   const contactsRef = useRef(null);
 
-  const scrollToSection = (path) => {
-    switch (path) {
+  useEffect(() => {
+    const scrollToRef = (ref) => {
+      if (ref?.current) {
+        ref.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    switch (location.pathname) {
+      case "/diagnostic-dashboard/":
+        scrollToRef(homeRef);
+        break;
       case "/diagnostic-dashboard/reports":
-        reportsRef.current?.scrollIntoView({ behavior: "smooth" });
+        scrollToRef(reportsRef);
         break;
       case "/diagnostic-dashboard/tests":
-        testsRef.current?.scrollIntoView({ behavior: "smooth" });
+        scrollToRef(testsRef);
         break;
       case "/diagnostic-dashboard/contacts":
-        contactsRef.current?.scrollIntoView({ behavior: "smooth" });
+        scrollToRef(contactsRef);
         break;
       default:
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToRef(homeRef);
     }
-  };
-
-  useEffect(() => {
-    scrollToSection(location.pathname);
   }, [location.pathname]);
 
   return (
     <div>
-      <DiagnosticNavbar/>
-      <DiagnosticHome scrollToSection={scrollToSection} />
+      <div ref={homeRef}>
+        <DiagnosticHome />
+      </div>
 
       <div ref={reportsRef}>
         <DiagnosticReportsOverview />

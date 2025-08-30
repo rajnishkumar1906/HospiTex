@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FileText, FlaskRound, Phone } from "lucide-react";
 
-function DiagnosticHome({ scrollToSection }) {
+function DiagnosticHome() {
   const services = [
     {
       title: "Reports",
@@ -41,23 +42,22 @@ function DiagnosticHome({ scrollToSection }) {
             className="w-full max-w-lg rounded-xl shadow-xl border border-indigo-200"
           />
         </div>
-
       </div>
 
       <div className="mt-16 w-full text-center">
         <h2 className="text-3xl font-bold text-indigo-900 mb-8">Quick Access</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {services.map((service) => (
-            <button
+            <Link
               key={service.title}
-              onClick={() => scrollToSection(service.path)}
+              to={service.path}
               className="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition border hover:scale-105 flex flex-col items-center hover:bg-indigo-100"
             >
               <div className="flex justify-center mb-4">{service.icon}</div>
               <h3 className="text-xl font-semibold text-indigo-700">{service.title}</h3>
               <p className="text-gray-600 mt-2 text-sm">{service.description}</p>
               <span className="mt-3 text-xs text-indigo-500 font-medium">Go & Manage</span>
-            </button>
+            </Link>
           ))}
         </div>
       </div>

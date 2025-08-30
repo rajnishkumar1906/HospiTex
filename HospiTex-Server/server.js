@@ -1,23 +1,30 @@
+// server.js
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-
 import dotenv from "dotenv";
-import cors from "cors";
+import { connectDB } from "./config/db.js";
+import cors from 'cors'
+import authRoutes from './routes/authRoutes.js'
+import cookieParser from "cookie-parser";
 
 dotenv.config();
-
 const app = express();
-const port = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
+const allowedOrigins = ['http://localhost:5173']
 
-// Needed for __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+    origin:process.env.FRONTEND_URL,
+    credentials : true
+}))
 
-app.use(cors()); // optional, only if you need CORS
+// DB connect
+connectDB();
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+// Routes
+app.use("/auth",authRoutes)
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.get("/", (req, res) => res.send("HospiTex API Running ✅"));
+
+// Server start
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
