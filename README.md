@@ -177,19 +177,3 @@ SENDER_EMAIL=youremail@example.com
 EMAIL_PASSWORD=your_email_password
 ```
 
-* Frontend `.env` example:
-
-```
-VITE_API_URL=http://localhost:5000
-```
-
----
-
-This README reflects **full project structure**, **role-based dashboards**, **authentication**, and **AI chatbot integration**.
-
-```
-
-I can also make a **GitHub-ready commit version** with this updated README so you can push it directly.  
-
-Do you want me to create that commit-ready file next?
-```
