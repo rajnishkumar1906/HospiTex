@@ -1,7 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from './Auth/AppContext';
+
+// ✅ CommonDashboard and Login pages
 import Login from './Auth/Login'; // make sure the path is correct
+import CommonDashboard from './pages/commonDashboard'
 
 // ✅ Patient Imports
 import PatientNavbar from './Users/Patient/PatientNavbar';
@@ -31,11 +34,14 @@ function App() {
 
   // ✅ Auto-redirect logged-in users away from login page
   useEffect(() => {
-    if (IsLoggedIn && location.pathname === '/') {
-      if (UserRole === 'Patient') navigate('/patient-dashboard');
-      else if (UserRole === 'Doctor') navigate('/doctor-dashboard');
-      else if (UserRole === 'Diagnostic') navigate('/diagnostic-dashboard');
-    }
+    if (!IsLoggedIn) return;
+
+    if (UserRole === 'Patient' && !location.pathname.startsWith('/patient-dashboard'))
+      navigate('/patient-dashboard');
+    else if (UserRole === 'Doctor' && !location.pathname.startsWith('/doctor-dashboard'))
+      navigate('/doctor-dashboard');
+    else if (UserRole === 'Diagnostic' && !location.pathname.startsWith('/diagnostic-dashboard'))
+      navigate('/diagnostic-dashboard');
   }, [IsLoggedIn, UserRole, location.pathname, navigate]);
 
   // ✅ Role-based route detection
@@ -96,8 +102,9 @@ function App() {
 
       <div className={isPatientRoute || isDoctorRoute || isDiagnosticRoute ? 'mt-20' : ''}>
         <Routes>
-          {/* ======================= Login Route ======================= */}
-          <Route path="/" element={<Login />} />
+          {/* ======================= CommonDashboard And Login Route ======================= */}
+          <Route path='/login' element={<Login />} />
+          <Route path="/" element={<CommonDashboard />} />
 
           {/* ======================= Patient Routes ======================= */}
           <Route

@@ -3,16 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../Auth/AppContext';
 
 function DiagnosticNavbar() {
-  const { isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser, setUserType } = useContext(AppContext);
+  const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const userInitial = currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : '';
+  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : '';
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCurrentUser(null);
-    setUserType('');
+    setUserRole(''); // reset role
     navigate('/');
   };
 
@@ -48,15 +47,15 @@ function DiagnosticNavbar() {
             Tests
           </Link>
 
-
           <Link
             to="/diagnostic-dashboard/contacts"
             className="text-indigo-900 font-medium px-2 py-2 transition duration-200 hover:text-indigo-700 hover:scale-105"
           >
             Contact
           </Link>
+
           {/* Profile Avatar with Dropdown */}
-          {isLoggedIn && userInitial && (
+          {IsLoggedIn && userInitial && (
             <div className="relative">
               <div
                 className="w-10 h-10 rounded-full bg-indigo-900 text-white flex items-center justify-center font-bold text-lg cursor-pointer hover:scale-105 transition"
@@ -84,7 +83,6 @@ function DiagnosticNavbar() {
               )}
             </div>
           )}
-
         </div>
       </div>
     </nav>

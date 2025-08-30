@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Stethoscope, FileText, Users, CheckCircle, Clock, Shield, Mail, Phone } from "lucide-react";
+import { AppContext } from "../Auth/AppContext";
 
 const CommonDashBoard = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const CommonDashBoard = () => {
     phone: "+1-234-567-8901"
   };
 
+  // const [IsLoggedIn , setLoggedIn] = useContext(AppContext)
   return (
     <div className="min-h-screen bg-gradient-to-tr from-indigo-50 via-white to-green-50 flex flex-col">
       {/* Navbar */}
@@ -77,16 +79,16 @@ const CommonDashBoard = () => {
       {/* Portal Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8 px-10 py-16">
         {portals.map(portal => (
-          <Link
-            to={portal.path}
+          <button
+            onClick={()=> navigate('/login')}
             key={portal.title}
-            className={`rounded-2xl shadow-lg p-8 flex flex-col items-center text-center bg-gradient-to-br ${portal.color} hover:shadow-2xl hover:scale-105 transition`}
+            className={`rounded-2xl shadow-lg p-8 flex flex-col items-center text-center bg-gradient-to-br ${portal.color} hover:shadow-2xl hover:scale-105 transition cursor:pointer`}
           >
             <div className="mb-4">{portal.icon}</div>
             <h2 className="text-2xl font-semibold text-indigo-900">{portal.title}</h2>
             <p className="mt-2 text-gray-700 text-sm">{portal.description}</p>
             <span className="mt-4 text-indigo-600 font-medium">Enter →</span>
-          </Link>
+          </button>
         ))}
       </section>
 

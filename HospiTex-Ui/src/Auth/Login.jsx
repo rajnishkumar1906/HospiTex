@@ -3,6 +3,9 @@ import { AppContext } from './AppContext';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+
+const API_URL = "http://localhost:5000";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,8 +17,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [selectedType, setSelectedType] = useState('Select');
 
-  const [users, setUsers] = useState([]); // Temporary users storage
-
   // Redirect if already logged in
   useEffect(() => {
     if (!IsLoggedIn) return;
@@ -25,53 +26,68 @@ const Login = () => {
     else if (UserRole === 'Diagnostic') navigate('/diagnostic-dashboard');
   }, [IsLoggedIn, UserRole, navigate]);
 
-  // SignUp handler
-  const handleSignUp = (e) => {
+  // Handle SignUp
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!name || !email || !password) return toast.error("All fields are required");
     if (selectedType === "Select") return toast.error("Please select a user type");
 
-    const existingUser = users.find(u => u.email === email);
-    if (existingUser) return toast.error("User already exists");
+    try {
+      const response = await axios.post(`${API_URL}/auth/signup`, {
+        username: name, // match backend
+        email,
+        password,
+        role: selectedType,
+      });
 
-    const newUser = { name, email, password, type: selectedType };
-    setUsers([...users, newUser]);
-    setIsLoggedIn(true);
-    setUserRole(selectedType);
-    setUser(newUser); // Update context user
-    toast.success("SignUp successful");
+      // ✅ Use returned user and role if backend is fixed
+      const user = response.data.user || { username: name, role: selectedType };
+      const role = response.data.role || selectedType;
 
-    // Reset form
-    setName('');
-    setEmail('');
-    setPassword('');
-    setSelectedType('Select');
+      setIsLoggedIn(true);
+      setUserRole(role);
+      setUser(user);
 
-    // Redirect
-    if (selectedType === 'Patient') navigate('/patient-dashboard');
-    else if (selectedType === 'Doctor') navigate('/doctor-dashboard');
-    else if (selectedType === 'Diagnostic') navigate('/diagnostic-dashboard');
+      toast.success("SignUp successful!");
+
+      // Navigate
+      if (role === 'Patient') navigate('/patient-dashboard');
+      else if (role === 'Doctor') navigate('/doctor-dashboard');
+      else if (role === 'Diagnostic') navigate('/diagnostic-dashboard');
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Signup failed");
+    }
   };
 
-  // Login handler
-  const handleLogin = (e) => {
+  // Handle Login
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const user = users.find(u => u.email === email && u.password === password);
-    if (!user) return toast.error("Invalid credentials");
+    if (!email || !password) return toast.error("All fields are required");
 
-    setIsLoggedIn(true);
-    setUserRole(user.type);
-    setUser(user); // Update context user
-    toast.success("Login successful");
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
 
-    setEmail('');
-    setPassword('');
+      const user = response.data.user;
+      const role = response.data.role;
 
-    if (user.type === 'Patient') navigate('/patient-dashboard');
-    else if (user.type === 'Doctor') navigate('/doctor-dashboard');
-    else if (user.type === 'Diagnostic') navigate('/diagnostic-dashboard');
+      if (!user || !role) return toast.error("Login failed");
+
+      setIsLoggedIn(true);
+      setUserRole(role);
+      setUser(user);
+
+      toast.success("Login successful");
+
+      if (role === 'Patient') navigate('/patient-dashboard');
+      else if (role === 'Doctor') navigate('/doctor-dashboard');
+      else if (role === 'Diagnostic') navigate('/diagnostic-dashboard');
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid credentials");
+    }
   };
 
   return (
@@ -80,82 +96,36 @@ const Login = () => {
       <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md flex flex-col items-center">
         <h1 className="text-4xl font-extrabold text-blue-600 mb-6">HospiTex</h1>
 
-        <form className="w-full flex flex-col gap-4">
+        <form className="w-full flex flex-col gap-4" onSubmit={userState === 'SignUp' ? handleSignUp : handleLogin}>
           {userState === 'SignUp' && (
             <>
-              <input
-                type="text"
-                placeholder="Name"
-                className="p-3 rounded-lg border border-gray-300"
-                value={name}
-                onChange={e => setName(e.target.value)}
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="p-3 rounded-lg border border-gray-300"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className="p-3 rounded-lg border border-gray-300"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-              <select
-                className="p-3 rounded-lg border border-gray-300"
-                value={selectedType}
-                onChange={e => setSelectedType(e.target.value)}
-              >
+              <input type="text" placeholder="Name" className="p-3 rounded-lg border border-gray-300" value={name} onChange={e => setName(e.target.value)} />
+              <input type="email" placeholder="Email" className="p-3 rounded-lg border border-gray-300" value={email} onChange={e => setEmail(e.target.value)} />
+              <input type="password" placeholder="Password" className="p-3 rounded-lg border border-gray-300" value={password} onChange={e => setPassword(e.target.value)} />
+              <select className="p-3 rounded-lg border border-gray-300" value={selectedType} onChange={e => setSelectedType(e.target.value)}>
                 <option value="Select">Select</option>
                 <option value="Patient">Patient</option>
                 <option value="Doctor">Doctor</option>
                 <option value="Diagnostic">Diagnostic</option>
               </select>
-              <button
-                onClick={handleSignUp}
-                className="bg-blue-600 text-white py-3 rounded-lg mt-2 hover:bg-blue-700 transition"
-              >
-                Sign Up
-              </button>
             </>
           )}
 
           {userState === 'Login' && (
             <>
-              <input
-                type="email"
-                placeholder="Email"
-                className="p-3 rounded-lg border border-gray-300"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className="p-3 rounded-lg border border-gray-300"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-              <button
-                onClick={handleLogin}
-                className="bg-blue-600 text-white py-3 rounded-lg mt-2 hover:bg-blue-700 transition"
-              >
-                Login
-              </button>
+              <input type="email" placeholder="Email" className="p-3 rounded-lg border border-gray-300" value={email} onChange={e => setEmail(e.target.value)} />
+              <input type="password" placeholder="Password" className="p-3 rounded-lg border border-gray-300" value={password} onChange={e => setPassword(e.target.value)} />
             </>
           )}
+
+          <button type="submit" className="bg-blue-600 text-white py-3 rounded-lg mt-2 hover:bg-blue-700 transition">
+            {userState === 'SignUp' ? 'Sign Up' : 'Login'}
+          </button>
         </form>
 
-        {/* Toggle SignUp/Login */}
         <p className="mt-4 text-gray-500 text-sm">
           {userState === 'SignUp' ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <span
-            className="text-blue-600 font-semibold cursor-pointer"
-            onClick={() => setUserState(userState === 'SignUp' ? 'Login' : 'SignUp')}
-          >
+          <span className="text-blue-600 font-semibold cursor-pointer" onClick={() => setUserState(userState === 'SignUp' ? 'Login' : 'SignUp')}>
             {userState === 'SignUp' ? 'Login' : 'Sign Up'}
           </span>
         </p>

@@ -1,19 +1,19 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AppContext } from '../../Auth/AppContext';
+// src/components/DoctorDashboard/DoctorNavbar.jsx
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../../Auth/AppContext";
 
 function DoctorNavbar() {
-  const { isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser, setUserType } = useContext(AppContext);
+  const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const userInitial = currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : '';
+  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCurrentUser(null);
-    setUserType('');
-    navigate('/');
+    setUserRole("Patient"); // optional: reset role
+    navigate("/");
   };
 
   return (
@@ -25,8 +25,8 @@ function DoctorNavbar() {
           <p className="text-green-900 text-3xl font-bold">Tex</p>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex flex-row items-center space-x-6 relative">
+        {/* Links */}
+        <div className="flex items-center space-x-6 relative">
           <Link
             to="/doctor-dashboard/"
             className="text-green-900 font-medium px-2 py-2 transition duration-200 hover:text-green-800 hover:scale-105"
@@ -41,8 +41,8 @@ function DoctorNavbar() {
             Contact
           </Link>
 
-          {/* Profile Avatar with Dropdown */}
-          {isLoggedIn && userInitial && (
+          {/* Profile Dropdown */}
+          {IsLoggedIn && userInitial && (
             <div className="relative">
               <div
                 className="w-10 h-10 rounded-full bg-green-900 text-white flex items-center justify-center font-bold text-lg cursor-pointer hover:scale-105 transition"

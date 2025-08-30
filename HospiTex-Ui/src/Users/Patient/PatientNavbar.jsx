@@ -7,11 +7,12 @@ function PatientNavbar() {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : '';
+  // ✅ Use username instead of name
+  const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : '';
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserRole('Patient'); // optional: reset role
+    setUserRole(''); // clear role
     navigate('/');
   };
 
