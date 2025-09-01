@@ -118,7 +118,7 @@ const Login = () => {
             </>
           )}
 
-          <button type="submit" className="bg-blue-600 text-white py-3 rounded-lg mt-2 hover:bg-blue-700 transition">
+          <button type="submit" className="bg-blue-600 text-white py-3 rounded-lg mt-2 hover:bg-blue-700 transition cursor-pointer">
             {userState === 'SignUp' ? 'Sign Up' : 'Login'}
           </button>
         </form>

@@ -8,7 +8,7 @@ function DoctorNavbar() {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : "";
+  const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
     setIsLoggedIn(false);

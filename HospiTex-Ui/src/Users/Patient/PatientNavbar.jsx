@@ -57,6 +57,10 @@ function PatientNavbar() {
                   >
                     View Profile
                   </Link>
+                  <Link 
+                    className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                  >
+                    My Appointments</Link>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-100"

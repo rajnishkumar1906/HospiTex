@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from './Auth/AppContext';
+import { ToastContainer } from 'react-toastify';
 
 // ✅ CommonDashboard and Login pages
-import Login from './Auth/Login'; // make sure the path is correct
+import Login from './Auth/Login';
 import CommonDashboard from './pages/commonDashboard'
 
 // ✅ Patient Imports
@@ -68,9 +69,9 @@ function App() {
 
   const diagnosticHomePaths = [
     '/diagnostic-dashboard',
-    '/diagnostic-dashboard/reports-services',
-    '/diagnostic-dashboard/tests-services',
-    '/diagnostic-dashboard/contact',
+    '/diagnostic-dashboard/reports',
+    '/diagnostic-dashboard/tests',
+    '/diagnostic-dashboard/contacts',
     '/diagnostic-dashboard/profile',
   ];
 
@@ -212,6 +213,9 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </div>
   );
 }
