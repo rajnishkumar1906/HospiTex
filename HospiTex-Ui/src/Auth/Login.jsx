@@ -49,7 +49,7 @@ const Login = () => {
       setUserRole(role);
       setUser(user);
 
-      toast.success("SignUp successful!");
+      toast.success("SignUp successful!",);
 
       // Navigate
       if (role === 'Patient') navigate('/patient-dashboard');

@@ -1,67 +1,93 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
 
-const DoctorAppointmentServices = () => {
-  const services = [
-    {
-      title: 'Today’s Schedule',
-      desc: 'View all appointments for the day in one place with time slots and patient info.',
-    },
-    {
-      title: 'Upcoming Consultations',
-      desc: 'Plan ahead with a detailed list of upcoming appointments.',
-    },
-    {
-      title: 'Follow-Up Visits',
-      desc: 'Track patients requiring follow-up care and schedule accordingly.',
-    },
-    {
-      title: 'Patient Notes',
-      desc: 'Access and update patient medical history and visit notes instantly.',
-    },
-    {
-      title: 'Rescheduling',
-      desc: 'Easily adjust appointment times to fit your availability.',
-    },
-    {
-      title: 'Missed Appointments',
-      desc: 'Log and manage patients who missed their appointments.',
-    },
-  ];
+const DoctorAppointments = () => {
+  const [appointments, setAppointments] = useState([
+    { id: 1, patient: "John Doe", service: "General Checkup", time: "2025-09-03 10:00 AM", status: "Pending" },
+    { id: 2, patient: "Anita Sharma", service: "Cardiologist Consultation", time: "2025-09-03 11:30 AM", status: "Confirmed" },
+    { id: 3, patient: "Ravi Kumar", service: "Follow-up Visit", time: "2025-09-03 01:00 PM", status: "Pending" },
+    { id: 4, patient: "Priya Nair", service: "Online Consultation", time: "2025-09-03 03:00 PM", status: "Completed" },
+    { id: 5, patient: "Amit Singh", service: "Orthopedic Checkup", time: "2025-09-03 04:30 PM", status: "Pending" },
+  ]);
+
+  const updateStatus = (id, newStatus) => {
+    setAppointments((prev) =>
+      prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app))
+    );
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "Confirmed":
+        return "bg-green-100 text-green-800";
+      case "Completed":
+        return "bg-gray-200 text-gray-700";
+      case "Cancelled":
+        return "bg-red-100 text-red-700";
+      default:
+        return "";
+    }
+  };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-green-100 to-white px-8 py-20">
-      <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-4xl font-extrabold text-green-800 mb-4">
-          Appointment Management Tools
+    <section className="min-h-screen bg-green-50 px-8 py-16">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <h2 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-6 text-center">
+          Manage Patient Appointments
         </h2>
-        <p className="text-gray-600 mb-12 max-w-2xl mx-auto">
-          Streamline your workflow with powerful tools to manage patient consultations efficiently and without hassle.
+        <p className="text-gray-700 mb-12 text-center">
+          View, track, and manage all patient appointments efficiently.
         </p>
 
+        {/* Appointment Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {services.map((s, idx) => (
+          {appointments.map((app) => (
             <div
-              key={idx}
-              className="bg-white border border-green-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition transform hover:scale-105"
+              key={app.id}
+              className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between hover:shadow-xl transition"
             >
-              <h3 className="text-xl font-semibold text-green-700 mb-3">{s.title}</h3>
-              <p className="text-gray-600">{s.desc}</p>
+              <div>
+                <h3 className="text-xl font-semibold text-green-700 mb-2">{app.patient}</h3>
+                <p className="text-gray-600 mb-1">{app.service}</p>
+                <p className="text-gray-500 text-sm mb-2">{app.time}</p>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(app.status)}`}>
+                  {app.status}
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {app.status !== "Completed" && app.status !== "Cancelled" && (
+                  <>
+                    <button
+                      onClick={() => updateStatus(app.id, "Confirmed")}
+                      className="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-800 transition text-sm flex-1"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => updateStatus(app.id, "Completed")}
+                      className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 transition text-sm flex-1"
+                    >
+                      Complete
+                    </button>
+                    <button
+                      onClick={() => updateStatus(app.id, "Cancelled")}
+                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm flex-1"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
-        </div>
-
-        <div className="mt-16 text-center">
-          <Link
-            to="/doctor-dashboard/appointments"
-            className="inline-block bg-green-700 text-white px-8 py-3 rounded-full shadow-lg hover:bg-green-800 transition duration-300 transform hover:scale-105"
-          >
-            Go to Appointments
-          </Link>
         </div>
       </div>
     </section>
   );
 };
 
-export default DoctorAppointmentServices;
+export default DoctorAppointments;

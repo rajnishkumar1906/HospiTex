@@ -1,66 +1,76 @@
+
 # 🏥 HospiTex - Smart Hospital Management System
 
-HospiTex is a **MERN-based hospital management system** providing dashboards for **patients, doctors, diagnostics, and ambulance services**, along with an AI chatbot **MediBot**.
+HospiTex is a **MERN-based hospital management system** that provides dashboards and services for **patients, doctors, diagnostics, and ambulance services**. It also features an AI chatbot called **MediBot** to assist users.
+
+---
+
+## 🌟 Features
+
+- **Role-based dashboards** for Patients, Doctors, Diagnostics, and Ambulance services.
+- **Authentication system** with JWT, email verification, and password reset.
+- **MediBot AI chatbot** for health guidance.
+- **Appointment and service booking** for patients.
+- **Secure backend** with Node.js, Express, and MongoDB.
+- **Responsive frontend** using React, Tailwind CSS, and Vite.
 
 ---
 
 ## 📂 Project Structure
 
 ```
+
 HospiTex/
 │
-├── backend/                   # Backend (Node.js + Express + MongoDB)
-│   ├── config/                # Database & environment setup
-│   │   └── db.js              # MongoDB connection file
+├── HospiTex-Server/            # Backend (Node.js + Express + MongoDB)
+│   ├── config/                 # Configurations
+│   │   ├── db.js               # MongoDB connection
+│   │   └── nodemailer.js       # Email transporter
 │   │
-│   ├── controllers/           # Handles business logic
-│   │   └── patientController.js
-│   │   └── doctorController.js
-│   │   └── diagnosticController.js
-│   │   └── ambulanceController.js
+│   ├── controllers/            # Business logic
+│   │   ├── authController.js
+│   │   ├── patientController.js
+│   │   ├── doctorController.js
+│   │   ├── diagnosticController.js
+│   │   └── medibot.js
 │   │
-│   ├── models/                # MongoDB schemas
-│   │   └── Patient.js
-│   │   └── Doctor.js
+│   ├── models/                 # MongoDB Schemas
+│   │   ├── User.js
+│   │   ├── Patient.js
+│   │   ├── Doctor.js
 │   │   └── Diagnostic.js
-│   │   └── Ambulance.js
 │   │
-│   ├── routes/                # API routes
-│   │   └── patientRoutes.js
-│   │   └── doctorRoutes.js
+│   ├── routes/                 # API Routes
+│   │   ├── authRoutes.js
+│   │   ├── patientRoutes.js
+│   │   ├── doctorRoutes.js
 │   │   └── diagnosticRoutes.js
-│   │   └── ambulanceRoutes.js
 │   │
-│   ├── middleware/            # Auth & error handling
-│   │   └── authMiddleware.js
-│   │   └── errorHandler.js
+│   ├── middleware/             # Authentication & error handling
+│   │   └── userAuth.js
 │   │
-│   ├── server.js              # Entry point for backend
-│   └── package.json           # Backend dependencies
+│   ├── .env                    # Environment variables
+│   ├── package.json             # Backend dependencies
+│   └── server.js                # Backend entry point
 │
-├── frontend/                  # React frontend
-│   ├── public/                # Static files
-│   │   └── index.html
+├── HospiTex-Ui/                # Frontend (React + Tailwind + Vite)
+│   ├── public/                 # Static files
+│   │   ├── index.html
 │   │   └── favicon.ico
 │   │
-│   ├── src/                   
-│   │   ├── App.jsx            # Main app component
-│   │   ├── index.js           # React entry point
+│   ├── src/
+│   │   ├── Auth/               # Authentication components
+│   │   │   ├── AppContext.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── EmailVerify.jsx
 │   │   │
-│   │   ├── components/        # Reusable components
-│   │   │   └── Navbar.jsx
-│   │   │   └── Footer.jsx
-│   │   │   └── Medibot.jsx
+│   │   ├── MediBot/            # AI chatbot
+│   │   │   └── MediBot.jsx
 │   │   │
-│   │   ├── Services/          # Service-specific pages
-│   │   │   └── DiagnosticServices.jsx
-│   │   │   └── AppointmentServices.jsx
-│   │   │   └── AmbulanceServices.jsx
-│   │   │
-│   │   ├── Users/             # User dashboards
+│   │   ├── Users/              # Role-based dashboards
 │   │   │   ├── Patient/
-│   │   │   │   └── PatientDashboard.jsx
-│   │   │   │   └── PatientNavbar.jsx
+│   │   │   │   ├── PatientDashboard.jsx
+│   │   │   │   ├── PatientNavbar.jsx
 │   │   │   │   └── HomePage.jsx
 │   │   │   │
 │   │   │   ├── Doctor/
@@ -69,67 +79,101 @@ HospiTex/
 │   │   │   ├── Diagnostic/
 │   │   │   │   └── DiagnosticDashboard.jsx
 │   │   │   │
-│   │   │   ├── Ambulance/
-│   │   │   │   └── AmbulanceDashboard.jsx
+│   │   │   └── Ambulance/
+│   │   │       └── AmbulanceDashboard.jsx
 │   │   │
-│   │   └── styles/            # CSS / Tailwind files
+│   │   ├── components/         # Reusable components
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   └── Medibot.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   └── commonDashboard.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── PatientContext.jsx
+│   │   │
+│   │   ├── assets/             # Images, icons, SVGs
+│   │   ├── styles/             # Tailwind / CSS
+│   │   │   └── style.css
+│   │   │
+│   │   ├── App.jsx
+│   │   └── main.jsx
 │   │
-│   └── package.json           # Frontend dependencies
+│   ├── .env                    # Frontend environment variables
+│   └── package.json
 │
-├── README.md                  # Project documentation
-├── .gitignore
-└── package.json               # Root (if using concurrently)
+├── README.md                   # Project documentation
+└── .gitignore
+
+````
+
+---
+
+## 🚀 Setup & Run Locally
+
+1. **Clone the repo:**
+
+```bash
+git clone https://github.com/rajnishkumar1906/HospiTex.git
+cd HospiTex
+````
+
+2. **Install backend dependencies:**
+
+```bash
+cd HospiTex-Server
+npm install
 ```
 
----
+3. **Install frontend dependencies:**
 
-## 📜 Folder Content Description
+```bash
+cd ../HospiTex-Ui
+npm install
+```
 
-### 🔹 `backend/`
+4. **Run both frontend & backend:**
 
-* **config/** → Database setup (`db.js`).
-* **controllers/** → Business logic (CRUD operations for patients, doctors, etc.).
-* **models/** → Mongoose schemas (`Patient.js`, `Doctor.js`).
-* **routes/** → Express routes (`/api/patients`, `/api/doctors`).
-* **middleware/** → Authentication, error handling.
-* **server.js** → Main backend entry point.
+```bash
+npm run dev
+```
 
-### 🔹 `frontend/`
-
-* **public/** → Contains `index.html` and static assets.
-* **src/App.jsx** → Main React component with routing.
-* **src/components/** → Navbar, Footer, MediBot chatbot.
-* **src/Services/** → Diagnostic, Appointment, Ambulance pages.
-* **src/Users/** → Dashboards for different user roles (Patient, Doctor, Diagnostic, Ambulance).
-* **src/styles/** → Tailwind / CSS files.
+The backend runs on `http://localhost:5000` and frontend on `http://localhost:5173` (Vite default).
 
 ---
 
-## 🚀 How to Run
+## 🔐 Authentication Flow
 
-1. Clone the repo:
+1. Users visit the site.
+2. If not logged in, redirected to **Login page**.
+3. Submit login form → `login()` updates user info in React Context.
+4. Based on **role (Patient, Doctor, Diagnostic)**, redirect to respective dashboard.
+5. Protected routes prevent unauthorized access using `RequireAuth`.
+6. Navbar and pages render dynamically based on **role**.
 
-   ```bash
-   git clone https://github.com/rajnishkumar1906/HospiTex.git
-   cd HospiTex
-   ```
+---
 
-2. Install backend:
+## 🛠 Tech Stack
 
-   ```bash
-   cd backend
-   npm install
-   ```
+* **Frontend:** React, Tailwind CSS, Vite
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB (Mongoose)
+* **Authentication:** JWT, bcrypt, email OTP verification
+* **Others:** Nodemailer, MediBot AI integration
 
-3. Install frontend:
+---
 
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+## 📌 Notes
 
-4. Run both:
+* Ensure `.env` files are configured in both frontend and backend.
+* Backend `.env` example:
 
-   ```bash
-   npm run dev
-   ```
+```
+PORT=5000
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
+SENDER_EMAIL=youremail@example.com
+EMAIL_PASSWORD=your_email_password
+```
+
