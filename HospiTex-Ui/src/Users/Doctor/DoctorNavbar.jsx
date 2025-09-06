@@ -1,20 +1,32 @@
 // src/components/DoctorDashboard/DoctorNavbar.jsx
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../Auth/AppContext";
 
 function DoctorNavbar() {
-  const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
+  const { IsLoggedIn, setIsLoggedIn, setUserRole, User } = useContext(AppContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : "";
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserRole("Patient"); // optional: reset role
+    setUserRole("Patient"); // reset role
     navigate("/");
   };
+
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="w-full shadow-md bg-gradient-to-r from-green-600 to-white fixed top-0 z-50 px-10 py-5">
@@ -43,10 +55,10 @@ function DoctorNavbar() {
 
           {/* Profile Dropdown */}
           {IsLoggedIn && userInitial && (
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <div
                 className="w-10 h-10 rounded-full bg-green-900 text-white flex items-center justify-center font-bold text-lg cursor-pointer hover:scale-105 transition"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => setDropdownOpen((prev) => !prev)}
               >
                 {userInitial}
               </div>

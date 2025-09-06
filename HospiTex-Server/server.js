@@ -14,7 +14,7 @@ const allowedOrigins = ['http://localhost:5173']
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
+    origin:allowedOrigins,
     credentials : true
 }))
 
@@ -23,6 +23,9 @@ connectDB();
 
 // Routes
 app.use("/auth",authRoutes)
+
+// User
+
 
 app.get("/", (req, res) => res.send("HospiTex API Running ✅"));
 

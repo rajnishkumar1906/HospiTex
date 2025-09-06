@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import User from "../models/User.js";
+import User from "../models/schema.js";
 import transporter from "../config/nodemailer.js";
 import dotenv from "dotenv";
 

@@ -11,6 +11,7 @@ function PatientNavbar() {
   const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : '';
 
   const handleLogout = () => {
+    setDropdownOpen(false)
     setIsLoggedIn(false);
     setUserRole(''); // clear role
     navigate('/');
@@ -51,14 +52,16 @@ function PatientNavbar() {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden z-50">
                   <Link
-                    to="/patient-dashboard/userprofile"
+                    to="/patient-dashboard/patientprofile"
                     className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
                     onClick={() => setDropdownOpen(false)}
                   >
                     View Profile
                   </Link>
                   <Link 
+                    to="/patient-dashboard/appointment-history"
                     className="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+                    onClick={() => setDropdownOpen(false)}
                   >
                     My Appointments</Link>
                   <button

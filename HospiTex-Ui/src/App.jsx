@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from './Auth/AppContext';
 import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 // ✅ CommonDashboard and Login pages
 import Login from './Auth/Login';
@@ -11,22 +12,25 @@ import CommonDashboard from './pages/commonDashboard'
 import PatientNavbar from './Users/Patient/PatientNavbar';
 import HomePage from './Users/Patient/HomePage';
 import PatientRegistration from './Users/Patient/PatientRegistration';
-import UserProfile from './Users/Patient/UserProfile';
+import PatientProfile from './Users/Patient/PatientProfile';
 import DiagnosticServices from './Users/Patient/Services/DiagnosticServices';
 import AppointmentServices from './Users/Patient/Services/appointmentService';
 import AmbulanceServices from './Users/Patient/Services/AmbulanceServices';
+import AppointmentHistory from './Users/Patient/AppointmentHistory';
 
 // ✅ Doctor Imports
 import DoctorNavbar from './Users/Doctor/DoctorNavbar';
 import DoctorHomePage from './Users/Doctor/DoctorHomePage';
 import DoctorAppointmentServices from './Users/Doctor/DoctorAppointmentServices';
 import DoctorPatientRecordsServices from './Users/Doctor/DoctorPatientRecordsServices';
+import DoctorProfile from './Users/Doctor/DoctorProfile';
 
 // ✅ Diagnostic Imports
 import DiagnosticNavbar from './Users/Diagnostic/DiagnosticNavbar';
 import DiagnosticHomePage from './Users/Diagnostic/DiagnosticHomePage';
 import DiagnosticReportsServices from './Users/Diagnostic/DiagnosticReportsServices';
 import DiagnosticTestsServices from './Users/Diagnostic/DiagnosticTestsServices';
+import DiagnosticProfile from './Users/Diagnostic/DiagnosticProfile';
 
 function App() {
   const location = useLocation();
@@ -57,6 +61,7 @@ function App() {
     '/patient-dashboard/diagnostic',
     '/patient-dashboard/ambulance',
     '/patient-dashboard/contacts',
+    '/patient-dashboard/patientprofile',
   ];
 
   const doctorHomePaths = [
@@ -116,19 +121,19 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/patient-dashboard/patientReg"
             element={
               <PrivateRoute role="Patient">
                 <PatientRegistration />
               </PrivateRoute>
             }
-          />
+          /> */}
           <Route
-            path="/patient-dashboard/userprofile"
+            path="/patient-dashboard/patientprofile"
             element={
               <PrivateRoute role="Patient">
-                <UserProfile />
+                <PatientProfile/>
               </PrivateRoute>
             }
           />
@@ -156,7 +161,14 @@ function App() {
               </PrivateRoute>
             }
           />
-
+          <Route 
+            path='/patient-dashboard/appointment-history'
+            element={
+              <PrivateRoute role="Patient">
+                <AppointmentHistory/>
+              </PrivateRoute>
+            }
+          />
           {/* ======================= Doctor Routes ======================= */}
           <Route
             path="/doctor-dashboard/*"
@@ -183,6 +195,17 @@ function App() {
             }
           />
 
+          <Route
+            path="/doctor-dashboard/profile"
+            element={
+              <PrivateRoute role="Doctor">
+                <DoctorProfile/>
+              </PrivateRoute>
+            }
+          />
+
+          
+
           {/* ======================= Diagnostic Routes ======================= */}
           <Route
             path="/diagnostic-dashboard/*"
@@ -193,6 +216,15 @@ function App() {
             }
           />
           <Route
+            path="/diagnostic-dashboard/diagnoctic-profile"
+            element={
+              <PrivateRoute role="Diagnostic">
+                <DiagnosticProfile/>
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
             path="/diagnostic-dashboard/reports-services"
             element={
               <PrivateRoute role="Diagnostic">
@@ -200,6 +232,7 @@ function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/diagnostic-dashboard/tests-services"
             element={
@@ -213,6 +246,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+      <ToastContainer autoClose={1500} /> {/* closes after 3s */}
     </div>
   );
 }

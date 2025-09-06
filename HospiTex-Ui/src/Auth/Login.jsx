@@ -92,7 +92,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-300 via-green-300 to-indigo-300 p-4">
-      <ToastContainer />
+      
       <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md flex flex-col items-center">
         <h1 className="text-4xl font-extrabold text-blue-600 mb-6">HospiTex</h1>
 

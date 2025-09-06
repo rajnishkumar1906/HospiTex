@@ -67,7 +67,7 @@ function DiagnosticNavbar() {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden z-50">
                   <Link
-                    to="/diagnostic-dashboard/profile"
+                    to="/diagnostic-dashboard/diagnoctic-profile"
                     className="block px-4 py-2 text-gray-800 hover:bg-indigo-100"
                     onClick={() => setDropdownOpen(false)}
                   >
