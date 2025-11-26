@@ -25,19 +25,7 @@ cd F:\HospiTex\HospiTex-Server
 
 **Copy this into your .env file:**
 ```env
-PORT=5000
-NODE_ENV=development
 
-MONGO_URI=mongodb://localhost:27017/hospitex
-
-JWT_SECRET=change_this_to_a_random_32_character_string_now
-
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PWD=your_gmail_app_password
-SENDER_EMAIL=your_email@gmail.com
-```
 
 **Important:**
 - Change `JWT_SECRET` to something random and long
