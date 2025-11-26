@@ -1,0 +1,38 @@
+=== DOCTOR SERVICES AND CONSULTATIONS ===
+
+Doctor Dashboard:
+Doctors have access to a comprehensive dashboard showing all their appointments, patient records, and pending consultations. The dashboard displays upcoming appointments, patient history, and allows doctors to manage their schedule.
+
+Appointment Management:
+Doctors can view all appointment requests, confirm or reschedule appointments, and mark appointments as completed. When confirming, doctors can add notes about preparation requirements or special instructions for patients.
+
+Patient Records Access:
+Doctors can access complete patient medical records including past consultations, diagnostic reports, prescriptions, and medical history. This helps provide informed care and continuity of treatment.
+
+Prescription Management:
+After consultations, doctors can create and issue prescriptions. Prescriptions include medication details, dosage, duration, and special instructions. These are automatically saved to patient records.
+
+Consultation Notes:
+Doctors document consultation details including symptoms, diagnosis, treatment plan, and recommendations. These notes are part of the patient's medical record and can be reviewed in future consultations.
+
+Patient Communication:
+Doctors can send messages to patients through the system, including appointment confirmations, follow-up reminders, test result notifications, and general health advice.
+
+Diagnostic Recommendations:
+Doctors can recommend diagnostic tests based on patient conditions. These recommendations are sent to diagnostic centers, and patients receive notifications to schedule the tests.
+
+Follow-up Scheduling:
+Doctors can schedule follow-up appointments directly from the consultation interface. Patients receive automatic notifications about scheduled follow-ups.
+
+Emergency Consultations:
+For urgent cases, doctors can prioritize appointments and provide immediate consultation. Emergency cases are flagged in the system for quick attention.
+
+Multi-doctor Consultations:
+For complex cases, doctors can request consultations with other specialists. The system facilitates coordination between multiple doctors for comprehensive patient care.
+
+Availability Management:
+Doctors can set their availability, working hours, and days off. The system automatically updates appointment slots based on doctor availability.
+
+Patient Status Updates:
+Doctors can update patient status, mark patients as requiring immediate attention, or flag cases for review by other specialists.
+

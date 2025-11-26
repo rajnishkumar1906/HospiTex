@@ -176,4 +176,3 @@ JWT_SECRET=your_jwt_secret
 SENDER_EMAIL=youremail@example.com
 EMAIL_PASSWORD=your_email_password
 ```
-

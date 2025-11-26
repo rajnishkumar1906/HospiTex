@@ -1,5 +1,8 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../../Auth/AppContext';
+import { motion } from 'framer-motion';
+import { Calendar, Clock, MapPin, DollarSign, X, User, Stethoscope } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AppointmentHistory = () => {
   const { bookedAppointments, setBookedAppointments } = useContext(AppContext);
@@ -7,78 +10,134 @@ const AppointmentHistory = () => {
   const cancelAppointment = (index) => {
     if (window.confirm("Are you sure you want to cancel this appointment?")) {
       setBookedAppointments(prev => prev.filter((_, i) => i !== index));
+      toast.success("Appointment cancelled successfully");
     }
   };
 
   if (!bookedAppointments || bookedAppointments.length === 0) {
     return (
-      <div className='min-w-screen min-h-screen flex flex-col justify-between pt-24 px-4 bg-gray-50'>
-        <div className='flex flex-col items-center'>
-          <h2 className='text-3xl font-bold mb-6'>My Appointments</h2>
-          <p className='text-gray-600 text-lg'>You have not booked any appointments yet.</p>
-        </div>
-
-        {/* Footer */}
-        <footer className="bg-green-800 text-white py-6 mt-12 w-full">
-          <div className="max-w-7xl mx-auto px-8 text-center">
-            <p className="text-sm md:text-base">&copy; {new Date().getFullYear()} HospiTex Healthcare. All rights reserved.</p>
-            <p className="text-sm md:text-base mt-1">Contact us: info@hospitaltex.com | +91 12345 67890</p>
+      <div className='min-h-screen flex flex-col justify-center items-center pt-24 px-4 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50'>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center max-w-md"
+        >
+          <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Calendar className="w-12 h-12 text-blue-600" />
           </div>
-        </footer>
+          <h2 className='text-4xl font-black text-gray-900 mb-4'>My Appointments</h2>
+          <p className='text-gray-600 text-lg mb-8'>You haven't booked any appointments yet.</p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => window.location.href = '/patient-dashboard/appointment-services'}
+            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+          >
+            Book Your First Appointment
+          </motion.button>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className='min-w-screen min-h-screen flex flex-col justify-between pt-24 px-4 bg-gray-50'>
-      <div className='flex flex-col items-center'>
-        <h2 className='text-3xl font-bold mb-8'>My Appointments</h2>
-        <div className='w-full max-w-5xl flex flex-col gap-6'>
+    <div className='min-h-screen pt-24 px-4 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 pb-12'>
+      <div className='max-w-6xl mx-auto'>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h2 className='text-4xl md:text-5xl font-black text-gray-900 mb-4'>
+            My <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Appointments</span>
+          </h2>
+          <p className="text-gray-600 text-lg">Manage and track your scheduled appointments</p>
+        </motion.div>
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {bookedAppointments.map((appt, idx) => (
-            <div
+            <motion.div
               key={idx}
-              className='bg-white rounded-xl shadow-md p-4 flex items-center justify-between gap-4'
-              style={{ minHeight: '150px' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              className='bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100'
             >
-              {/* Left: Doctor Image */}
-              <img
-                src={appt.doctor.img}
-                alt={appt.doctor.name}
-                className='w-[150px] h-[150px] object-cover rounded-lg border border-green-200'
-              />
+              <div className='p-6'>
+                <div className='flex gap-6'>
+                  {/* Doctor Image */}
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-2xl blur opacity-20"></div>
+                    <img
+                      src={appt.doctor.img}
+                      alt={appt.doctor.name}
+                      className='relative w-24 h-24 object-cover rounded-xl border-4 border-white shadow-lg'
+                    />
+                  </div>
 
-              {/* Middle: Doctor Details */}
-              <div className='flex-1 flex flex-col justify-center gap-1' style={{ width: '300px' }}>
-                <h3 className='text-xl font-semibold text-green-700'>{appt.doctor.name}</h3>
-                <p className='text-gray-600'>{appt.doctor.specialty}</p>
-                <p className='text-gray-500 text-sm'>{appt.doctor.location}</p>
-                <p className='text-gray-700 mt-1'><span className='font-semibold'>Date:</span> {appt.date}</p>
-                <p className='text-gray-700'><span className='font-semibold'>Time:</span> {appt.time}</p>
+                  {/* Doctor Details */}
+                  <div className='flex-1 min-w-0'>
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className='text-xl font-black text-gray-900 mb-1 flex items-center gap-2'>
+                          <User className="w-5 h-5 text-blue-600" />
+                          {appt.doctor.name}
+                        </h3>
+                        <p className='text-blue-600 font-bold mb-2 flex items-center gap-2'>
+                          <Stethoscope className="w-4 h-4" />
+                          {appt.doctor.specialty}
+                        </p>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.1, rotate: 90 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => cancelAppointment(idx)}
+                        className='p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors'
+                        title="Cancel Appointment"
+                      >
+                        <X className="w-5 h-5" />
+                      </motion.button>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm">{appt.doctor.location}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Calendar className="w-4 h-4 text-blue-600" />
+                        <span className="font-semibold">{new Date(appt.date).toLocaleDateString('en-US', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Clock className="w-4 h-4 text-cyan-600" />
+                        <span className="font-semibold">{appt.time}</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Appointment Fee</span>
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="w-5 h-5 text-emerald-600" />
+                          <span className='text-2xl font-black text-emerald-600'>₹{appt.doctor.appointmentFee}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              {/* Right: Fee & Cancel */}
-              <div className='flex flex-col items-end justify-center gap-2'>
-                <p className='text-green-800 font-semibold text-lg'>₹{appt.doctor.appointmentFee}</p>
-                <button
-                  onClick={() => cancelAppointment(idx)}
-                  className='bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition'
-                >
-                  Cancel
-                </button>
-              </div>
-
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-green-800 text-white py-6 mt-12 w-full">
-        <div className="max-w-7xl mx-auto px-8 text-center">
-          <p className="text-sm md:text-base">&copy; {new Date().getFullYear()} HospiTex Healthcare. All rights reserved.</p>
-          <p className="text-sm md:text-base mt-1">Contact us: info@hospitaltex.com | +91 12345 67890</p>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -1,0 +1,41 @@
+=== DIAGNOSTIC SERVICES AND TESTS ===
+
+Diagnostic Center Overview:
+Diagnostic centers provide various medical tests including blood tests, imaging, pathology, radiology, and specialized diagnostic procedures. Patients can contact diagnostic centers through the diagnostic dashboard.
+
+Test Booking:
+Patients can book diagnostic tests through the diagnostic section. Select the type of test needed, choose a date and time, and receive confirmation. Some tests may require doctor recommendations.
+
+Test Preparation:
+Different tests have specific preparation requirements. Fasting may be required for blood tests, while imaging tests may have dietary restrictions. Diagnostic centers provide detailed preparation instructions when booking.
+
+Test Results:
+Test results are available through the diagnostic dashboard. Results are typically available within 24-48 hours depending on the test type. Patients receive notifications when results are ready.
+
+Report Sharing:
+Diagnostic reports can be shared directly with doctors through the system. Doctors receive automatic notifications when new reports are available for their patients.
+
+Common Diagnostic Tests:
+Blood tests include complete blood count (CBC), lipid profile, blood sugar, liver function, kidney function, and thyroid tests. Imaging includes X-rays, CT scans, MRI, and ultrasound. Pathology includes biopsy and cytology tests.
+
+Specialized Tests:
+Specialized diagnostic tests include cardiac stress tests, endoscopy, colonoscopy, mammography, and genetic testing. These require specific scheduling and preparation.
+
+Test Packages:
+Diagnostic centers offer health checkup packages that include multiple tests at discounted rates. These packages are useful for comprehensive health assessments.
+
+Home Sample Collection:
+For convenience, some diagnostic centers offer home sample collection services. Patients can schedule home visits for sample collection, especially for elderly or mobility-impaired patients.
+
+Report Interpretation:
+Diagnostic reports include detailed results with reference ranges. Patients can view reports in the dashboard, and doctors can provide interpretation during consultations.
+
+Follow-up Tests:
+Based on initial test results, doctors may recommend follow-up tests. These can be scheduled directly through the diagnostic section with doctor recommendations attached.
+
+Quality Assurance:
+All diagnostic centers maintain quality standards and certifications. Test results are accurate and reliable, meeting medical laboratory standards.
+
+Emergency Tests:
+For urgent cases, diagnostic centers prioritize emergency tests. Results are expedited and shared immediately with doctors and patients.
+

@@ -1,0 +1,38 @@
+=== HOSPITAL POLICIES AND PROCEDURES ===
+
+Appointment Policies:
+Appointments should be booked at least 24 hours in advance when possible. Cancellations must be made at least 24 hours before the appointment time. Late cancellations may be subject to fees.
+
+Prescription Policies:
+Prescriptions are valid for the duration specified by the doctor. Controlled substances require special authorization. Prescription renewals must be approved by the prescribing doctor.
+
+Diagnostic Test Policies:
+Some diagnostic tests require doctor recommendations. Test results are confidential and shared only with the patient and authorized doctors. Results are typically available within 24-48 hours.
+
+Privacy Policy:
+All patient information is confidential and protected. Medical records are accessible only to authorized personnel. Patient consent is required for sharing information with third parties.
+
+Emergency Procedures:
+In medical emergencies, call the emergency helpline immediately. Emergency services are available 24/7. Critical cases receive priority attention.
+
+Data Security:
+All data is encrypted and stored securely. Regular backups ensure data safety. The system complies with healthcare data protection regulations.
+
+User Responsibilities:
+Users must provide accurate information and keep their profiles updated. Patients should inform doctors about allergies, current medications, and medical history.
+
+Communication Guidelines:
+All communications through the system should be professional and respectful. Doctors respond to patient queries within reasonable timeframes.
+
+Quality Assurance:
+The system maintains high standards for medical services. All doctors and diagnostic centers are verified and meet quality requirements.
+
+Refund and Cancellation:
+Appointment cancellation policies vary by service type. Refunds are processed according to hospital policies. Contact support for specific refund requests.
+
+Accessibility:
+The system is designed to be accessible to all users. Support is available for users who need assistance navigating the system.
+
+Complaint Resolution:
+Users can report issues or complaints through the system. All complaints are reviewed and addressed according to hospital policies and procedures.
+

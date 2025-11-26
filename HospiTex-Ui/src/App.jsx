@@ -133,7 +133,7 @@ function App() {
             path="/patient-dashboard/patientprofile"
             element={
               <PrivateRoute role="Patient">
-                <PatientProfile/>
+                <PatientProfile />
               </PrivateRoute>
             }
           />
@@ -161,11 +161,11 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route 
+          <Route
             path='/patient-dashboard/appointment-history'
             element={
               <PrivateRoute role="Patient">
-                <AppointmentHistory/>
+                <AppointmentHistory />
               </PrivateRoute>
             }
           />
@@ -199,12 +199,12 @@ function App() {
             path="/doctor-dashboard/profile"
             element={
               <PrivateRoute role="Doctor">
-                <DoctorProfile/>
+                <DoctorProfile />
               </PrivateRoute>
             }
           />
 
-          
+
 
           {/* ======================= Diagnostic Routes ======================= */}
           <Route
@@ -219,11 +219,11 @@ function App() {
             path="/diagnostic-dashboard/diagnoctic-profile"
             element={
               <PrivateRoute role="Diagnostic">
-                <DiagnosticProfile/>
+                <DiagnosticProfile />
               </PrivateRoute>
             }
           />
-          
+
           <Route
             path="/diagnostic-dashboard/reports-services"
             element={
@@ -246,7 +246,18 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-      <ToastContainer autoClose={1500} /> {/* closes after 3s */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import User from "../models/schema.js";
+import {User, Patient, Doctor, Diagnostic} from '../models/schema.js'
 import transporter from "../config/nodemailer.js";
 import dotenv from "dotenv";
 
@@ -35,6 +35,23 @@ export const signUp = async (req, res) => {
     });
 
     await newUser.save();
+
+    // Create role-specific profile
+    try {
+      if (newUser.role === "Patient") {
+        const patient = new Patient({ user: newUser._id });
+        await patient.save();
+      } else if (newUser.role === "Doctor") {
+        const doctor = new Doctor({ user: newUser._id });
+        await doctor.save();
+      } else if (newUser.role === "Diagnostic") {
+        const diagnostic = new Diagnostic({ user: newUser._id });
+        await diagnostic.save();
+      }
+    } catch (profileError) {
+      console.error("Profile creation error:", profileError);
+      // Continue even if profile creation fails
+    }
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 

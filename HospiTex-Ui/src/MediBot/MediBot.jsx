@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import axios from 'axios';
 
 const MediBot = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [chatId, setChatId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Initial messages for the chatbot
     const [messages, setMessages] = useState([
@@ -15,24 +18,74 @@ const MediBot = () => {
     // State for user input
     const [input, setInput] = useState('');
 
+    // MediBot API URL (through HospiTex-Server proxy)
+    const API_URL = 'http://localhost:5000/medibot';
+
+    // Initialize chat when component mounts or bot opens
+    useEffect(() => {
+        if (isOpen && !chatId) {
+            initializeChat();
+        }
+    }, [isOpen]);
+
+    const initializeChat = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/chat/new`);
+            if (response.data && response.data.chat_id) {
+                setChatId(response.data.chat_id);
+            }
+        } catch (error) {
+            console.error('Failed to initialize chat:', error);
+        }
+    };
+
     // Function to toggle the chatbot visibility
     const toggleBot = () => setIsOpen(!isOpen);
 
-    const handleSend = () => {
-        if (!input.trim()) return;
+    const handleSend = async () => {
+        if (!input.trim() || isLoading) return;
 
         const userMessage = {
             sender: 'user', 
             text: input 
         };
-        
-        const botResponse = {
-            sender: 'bot',
-            text: 'Thanks for your message. A representative will respond shortly!'
-        };
 
-        setMessages(prev => [...prev, userMessage, botResponse]);
+        // Add user message immediately
+        setMessages(prev => [...prev, userMessage]);
         setInput('');
+        setIsLoading(true);
+
+        try {
+            // Ensure we have a chat ID
+            let currentChatId = chatId;
+            if (!currentChatId) {
+                const chatResponse = await axios.get(`${API_URL}/chat/new`);
+                currentChatId = chatResponse.data.chat_id;
+                setChatId(currentChatId);
+            }
+
+            // Send question to Flask backend
+            const response = await axios.post(`${API_URL}/ask`, {
+                question: input,
+                chat_id: currentChatId
+            });
+
+            const botResponse = {
+                sender: 'bot',
+                text: response.data.answer || 'Sorry, I couldn\'t process your request. Please try again.'
+            };
+
+            setMessages(prev => [...prev, botResponse]);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            const errorResponse = {
+                sender: 'bot',
+                text: 'Sorry, I\'m having trouble connecting. Please check if the MediBot server is running.'
+            };
+            setMessages(prev => [...prev, errorResponse]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -81,12 +134,17 @@ const MediBot = () => {
                         <input
                             type="text"
                             className="flex-1 p-2 border rounded"
-                            placeholder="Ask me anything..."
+                            placeholder={isLoading ? "MediBot is thinking..." : "Ask me anything..."}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                            onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSend()}
+                            disabled={isLoading}
                         />
-                        <button onClick={handleSend} className="text-blue-600 hover:text-blue-800">
+                        <button 
+                            onClick={handleSend} 
+                            disabled={isLoading}
+                            className={`text-blue-600 hover:text-blue-800 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
                             <Send size={18} />
                         </button>
                     </div>

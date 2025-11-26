@@ -1,0 +1,32 @@
+=== PATIENT BOOKING AND APPOINTMENTS ===
+
+Appointment Booking Process:
+Patients can book appointments through the patient dashboard. Select your preferred doctor from the available list, choose a date and time slot that suits you. The system shows real-time availability. Once booked, you'll receive a confirmation notification. Doctors can view pending appointments and confirm or reschedule them.
+
+Appointment Confirmation:
+After booking, doctors review and confirm appointments. You'll receive notifications when your appointment is confirmed. If a doctor needs to reschedule, you'll be notified with alternative time slots. Confirmed appointments appear in your appointment history.
+
+Appointment Cancellation:
+Patients can cancel appointments up to 24 hours before the scheduled time through the patient dashboard. Late cancellations may be subject to policies. Doctors can also cancel appointments in case of emergencies, and patients will be notified immediately.
+
+Appointment Reminders:
+The system sends automatic reminders 24 hours and 2 hours before your appointment. These reminders help ensure you don't miss your scheduled consultation.
+
+Walk-in Appointments:
+For urgent cases, walk-in appointments may be available based on doctor availability. Check with the reception or use the patient dashboard to see same-day availability.
+
+Rescheduling Appointments:
+Patients can reschedule appointments through the dashboard. Select a new date and time from available slots. Doctors can also request rescheduling if needed, and patients will be notified.
+
+Appointment History:
+All past and upcoming appointments are stored in your appointment history. View details including doctor name, date, time, status (confirmed, pending, completed), and any notes from the consultation.
+
+Booking Multiple Appointments:
+Patients can book appointments with different doctors for the same day or different days. Each appointment is managed independently in your dashboard.
+
+Specialty Appointments:
+Different doctors specialize in various medical fields. When booking, you can filter by specialty to find the right doctor for your needs. Specialists include cardiologists, neurologists, pediatricians, and more.
+
+Follow-up Appointments:
+After a consultation, doctors may recommend follow-up appointments. These can be scheduled directly from the consultation notes or through the regular booking process.
+

@@ -1,0 +1,35 @@
+=== EMERGENCY SERVICES ===
+
+Emergency Helpline:
+For medical emergencies, patients can call the emergency helpline available 24/7. The helpline connects patients with emergency medical services and provides immediate assistance.
+
+Ambulance Service:
+Patients can request ambulance services through the patient dashboard. The ambulance service is available for emergencies and can be booked for non-emergency patient transport. Real-time tracking may be available.
+
+Emergency Appointments:
+In case of medical emergencies, patients can request urgent appointments. Doctors prioritize emergency cases and provide immediate consultation when available.
+
+Emergency Diagnostic Tests:
+For critical conditions, diagnostic centers prioritize emergency tests. Results are expedited and shared immediately with doctors for urgent medical decisions.
+
+Emergency Contact:
+Patients can add emergency contacts in their profile. In case of emergencies, these contacts can be notified and authorized to access medical information if needed.
+
+Triage System:
+The system supports triage for emergency cases, helping prioritize patients based on severity. Critical cases receive immediate attention.
+
+Emergency Protocols:
+HospiTex follows standard emergency medical protocols. All emergency services are coordinated to ensure quick response and appropriate care.
+
+After-hours Services:
+Emergency services are available 24/7. Doctors on call can be contacted for urgent consultations outside regular hours.
+
+Emergency Medical Records:
+Emergency medical personnel can access critical patient information including allergies, current medications, and medical history to provide appropriate emergency care.
+
+Patient Status:
+In emergencies, patient status can be updated to critical, and all relevant medical staff are notified immediately.
+
+Coordination:
+Emergency services coordinate with doctors, diagnostic centers, and ambulance services to ensure comprehensive emergency care.
+

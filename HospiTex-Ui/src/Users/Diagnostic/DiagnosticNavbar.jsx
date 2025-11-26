@@ -1,90 +1,231 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../Auth/AppContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Home, Phone, User, LogOut, Menu, X, FileText, TestTube } from 'lucide-react';
 
 function DiagnosticNavbar() {
   const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : '';
 
   const handleLogout = () => {
+    setDropdownOpen(false);
     setIsLoggedIn(false);
-    setUserRole(''); // reset role
+    setUserRole('');
     navigate('/');
   };
 
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
+
   return (
-    <nav className="w-full shadow-md bg-gradient-to-r from-indigo-600 to-white fixed top-0 z-50 px-10 py-5">
-      <div className="flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center space-x-1">
-          <p className="text-white text-3xl font-bold">Hospi</p>
-          <p className="text-indigo-900 text-3xl font-bold">Tex</p>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="flex flex-row items-center space-x-6 relative">
-          <Link
-            to="/diagnostic-dashboard"
-            className="text-indigo-900 font-medium px-2 py-2 transition duration-200 hover:text-indigo-700 hover:scale-105"
+    <nav className="w-full shadow-lg bg-white/95 backdrop-blur-md fixed top-0 z-50 border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => navigate('/diagnostic-dashboard/')}
           >
-            Home
-          </Link>
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <TestTube className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex items-baseline">
+              <span className="text-2xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                Hospi
+              </span>
+              <span className="text-2xl font-black text-gray-900">Tex</span>
+            </div>
+          </motion.div>
 
-          <Link
-            to="/diagnostic-dashboard/reports-services"
-            className="text-indigo-900 font-medium px-2 py-2 transition duration-200 hover:text-indigo-700 hover:scale-105"
-          >
-            Reports
-          </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
+            <Link
+              to="/diagnostic-dashboard"
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                isActive('/diagnostic-dashboard') && !location.pathname.includes('reports') && !location.pathname.includes('tests') && !location.pathname.includes('contacts') && !location.pathname.includes('profile')
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </Link>
 
-          <Link
-            to="/diagnostic-dashboard/tests-services"
-            className="text-indigo-900 font-medium px-2 py-2 transition duration-200 hover:text-indigo-700 hover:scale-105"
-          >
-            Tests
-          </Link>
+            <Link
+              to="/diagnostic-dashboard/reports-services"
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                isActive('/diagnostic-dashboard/reports')
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              Reports
+            </Link>
 
-          <Link
-            to="/diagnostic-dashboard/contacts"
-            className="text-indigo-900 font-medium px-2 py-2 transition duration-200 hover:text-indigo-700 hover:scale-105"
-          >
-            Contact
-          </Link>
+            <Link
+              to="/diagnostic-dashboard/tests-services"
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                isActive('/diagnostic-dashboard/tests')
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <TestTube className="w-4 h-4" />
+              Tests
+            </Link>
 
-          {/* Profile Avatar with Dropdown */}
-          {IsLoggedIn && userInitial && (
-            <div className="relative">
-              <div
-                className="w-10 h-10 rounded-full bg-indigo-900 text-white flex items-center justify-center font-bold text-lg cursor-pointer hover:scale-105 transition"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                {userInitial}
+            <Link
+              to="/diagnostic-dashboard/contacts"
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
+                isActive('/diagnostic-dashboard/contacts')
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <Phone className="w-4 h-4" />
+              Contact
+            </Link>
+
+            {IsLoggedIn && userInitial && (
+              <div className="relative ml-4">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg cursor-pointer shadow-lg"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  {userInitial}
+                </motion.div>
+
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-48 bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-100 z-50"
+                    >
+                      <Link
+                        to="/diagnostic-dashboard/diagnoctic-profile"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        <User className="w-4 h-4" />
+                        View Profile
+                      </Link>
+                      <div className="border-t border-gray-100"></div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+            )}
+          </div>
 
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden z-50">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-t border-gray-100"
+          >
+            <div className="px-4 py-4 space-y-2">
+              <Link
+                to="/diagnostic-dashboard"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive('/diagnostic-dashboard') && !location.pathname.includes('reports') && !location.pathname.includes('tests') && !location.pathname.includes('contacts') && !location.pathname.includes('profile')
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Home className="w-5 h-5" />
+                Home
+              </Link>
+              <Link
+                to="/diagnostic-dashboard/reports-services"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive('/diagnostic-dashboard/reports')
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <FileText className="w-5 h-5" />
+                Reports
+              </Link>
+              <Link
+                to="/diagnostic-dashboard/tests-services"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive('/diagnostic-dashboard/tests')
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <TestTube className="w-5 h-5" />
+                Tests
+              </Link>
+              <Link
+                to="/diagnostic-dashboard/contacts"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive('/diagnostic-dashboard/contacts')
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Phone className="w-5 h-5" />
+                Contact
+              </Link>
+              {IsLoggedIn && (
+                <>
                   <Link
                     to="/diagnostic-dashboard/diagnoctic-profile"
-                    className="block px-4 py-2 text-gray-800 hover:bg-indigo-100"
-                    onClick={() => setDropdownOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
+                    <User className="w-5 h-5" />
                     View Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-800 hover:bg-indigo-100"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 font-semibold"
                   >
+                    <LogOut className="w-5 h-5" />
                     Logout
                   </button>
-                </div>
+                </>
               )}
             </div>
-          )}
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
