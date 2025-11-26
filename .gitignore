@@ -13,3 +13,9 @@ package-lock.json
 
 # Log files
 *.log
+
+
+
+HospiTex-Server/.env
+HospiTex-Ui/.env
+MyBot/.env
