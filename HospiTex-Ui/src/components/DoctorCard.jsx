@@ -2,23 +2,63 @@ import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, DollarSign, Award, MapPin } from 'lucide-react';
+import apiClient from "../config/axios";
 
-const DoctorCard = ({ doctor, goBack, onBook }) => {
+const defaultSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"];
+
+const DoctorCard = ({ doctor, goBack, onBooked }) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  const timeSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"];
+  if (!doctor) return null;
+
+  const timeSlots = doctor.availability?.length ? doctor.availability : defaultSlots;
 
   const bookAppointment = () => {
     if (!selectedDate || !selectedTime) {
       toast.error("Please select a date and time.");
       return;
     }
-    const appointment = { doctor, date: selectedDate, time: selectedTime };
-    onBook(appointment);
-    toast.success("Appointment booked successfully!");
-    
-    goBack();
+    if (!doctor.userId) {
+      toast.error("Doctor profile is missing required identifiers. Please try another doctor.");
+      return;
+    }
+
+    const payload = {
+      doctorId: doctor.userId,
+      date: selectedDate,
+      time: selectedTime,
+      service: doctor.specialty || "Consultation",
+      notes: "",
+      appointmentFee: doctor.appointmentFee || 0,
+      doctorName: doctor.name,
+      doctorSpecialty: doctor.specialty || "",
+      doctorLocation: doctor.location || "",
+      doctorImage: doctor.img || "",
+    };
+
+    const submit = async () => {
+      try {
+        setIsSubmitting(true);
+        setSubmitError(null);
+        const { data } = await apiClient.post("/api/appointments/book", payload);
+        toast.success("Appointment booked successfully!");
+        if (onBooked) {
+          onBooked(data?.appointment);
+        }
+        goBack();
+      } catch (error) {
+        const message = error.response?.data?.message || "Unable to book the appointment right now.";
+        setSubmitError(message);
+        toast.error(message);
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    submit();
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -96,7 +136,7 @@ const DoctorCard = ({ doctor, goBack, onBook }) => {
                 <DollarSign className="w-5 h-5" />
                 <span className="font-semibold">Appointment Fee</span>
               </div>
-              <span className="text-2xl font-black">₹{doctor.appointmentFee}</span>
+              <span className="text-2xl font-black">₹{doctor.appointmentFee ?? 0}</span>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
@@ -147,15 +187,19 @@ const DoctorCard = ({ doctor, goBack, onBook }) => {
               </div>
             </div>
 
+            {submitError && (
+              <p className="text-sm text-red-600 -mt-2">{submitError}</p>
+            )}
+
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={bookAppointment}
-              disabled={!selectedDate || !selectedTime}
+              disabled={!selectedDate || !selectedTime || isSubmitting}
               className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <Calendar className="w-5 h-5" />
-              Book Appointment
+              {isSubmitting ? "Booking..." : "Book Appointment"}
             </motion.button>
           </div>
         </div>

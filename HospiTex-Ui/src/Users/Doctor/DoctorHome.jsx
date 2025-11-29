@@ -30,7 +30,7 @@ function DoctorHome() {
       <div className="mt-16 w-full grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border hover:scale-105">
           <h2 className="text-2xl font-semibold text-green-900 mb-2">Today's Appointments</h2>
-          <p className="text-green-800 text-lg">8 Scheduled</p>
+          <p className="text-green-800 text-lg">Review your live schedule</p>
           <Link
             to="/doctor-dashboard/appointment-services"
             className="mt-4 inline-block text-sm text-green-700 hover:underline"
@@ -41,7 +41,7 @@ function DoctorHome() {
 
         <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border hover:scale-105">
           <h2 className="text-2xl font-semibold text-green-900 mb-2">Pending Lab Reports</h2>
-          <p className="text-green-800 text-lg">3 Reports</p>
+          <p className="text-green-800 text-lg">Track diagnostics awaiting review</p>
           <Link
             to="/doctor-dashboard/lab-reports"
             className="mt-4 inline-block text-sm text-green-700 hover:underline"
@@ -52,7 +52,7 @@ function DoctorHome() {
 
         <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition border hover:scale-105">
           <h2 className="text-2xl font-semibold text-green-900 mb-2">Messages</h2>
-          <p className="text-green-800 text-lg">5 Unread</p>
+          <p className="text-green-800 text-lg">Follow up on latest updates</p>
           <Link
             to="/doctor-dashboard/messages"
             className="mt-4 inline-block text-sm text-green-700 hover:underline"

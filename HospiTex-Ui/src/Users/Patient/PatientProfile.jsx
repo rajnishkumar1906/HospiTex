@@ -1,21 +1,103 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../Auth/AppContext";
+import apiClient from "../../config/axios";
 
 const PatientProfile = () => {
+  const { User } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  const name = "Rajnish";
-  const age = 22;
-  const gender = "M";
-  const phone = "+91 9876543210";
-  const email = "rajnish@example.com";
-  const address = "123 Blue Street, New Delhi";
-  const bloodGroup = "O+";
-  const emergencyContact = "+91 9123456789";
-  const medicalHistory =
-    "No major illnesses. Allergic to penicillin. History of seasonal flu.";
+  const [profile, setProfile] = useState({
+    name: "",
+    age: "",
+    gender: "",
+    phone: "",
+    email: "",
+    address: "",
+    bloodGroup: "",
+    emergencyContact: "",
+    medicalHistory: "",
+  });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const { data } = await apiClient.get("/api/users/profile");
+        const patientProfile = data?.profile;
+        setProfile({
+          name: data?.user?.username || "",
+          age: patientProfile?.age?.toString() || "",
+          gender: patientProfile?.gender || "",
+          phone: patientProfile?.phone || "",
+          email: data?.user?.email || "",
+          address: patientProfile?.address || "",
+          bloodGroup: patientProfile?.bloodGroup || "",
+          emergencyContact: patientProfile?.emergencyContact || "",
+          medicalHistory: patientProfile?.medicalHistory || "",
+        });
+      } catch (err) {
+        const message = err.response?.data?.message || "Unable to load your profile.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+    setError(null);
+    setSuccess(null);
+  };
+
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      if (profile.name && profile.name !== User?.username) {
+        await apiClient.put("/api/users/profile", { username: profile.name });
+      }
+
+      const payload = {
+        phone: profile.phone,
+        age: profile.age ? Number(profile.age) : null,
+        gender: profile.gender,
+        address: profile.address,
+        bloodGroup: profile.bloodGroup,
+        emergencyContact: profile.emergencyContact,
+        medicalHistory: profile.medicalHistory,
+      };
+
+      await apiClient.put("/api/users/profile/patient", payload);
+      setSuccess("Profile updated successfully!");
+      setIsOpen(false);
+    } catch (err) {
+      const message = err.response?.data?.message || "Unable to update profile.";
+      setError(message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-white">
+        <p className="text-white text-lg">Loading your profile...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-500  to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-500 to-white">
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center p-6">
         {/* Profile Card */}
@@ -23,38 +105,41 @@ const PatientProfile = () => {
           {/* Left Side */}
           <div className="flex flex-col items-center w-1/3">
             <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
+              src="/Pictures/patient.png"
               alt="Patient"
-              className="w-32 h-32 rounded-full border-4 border-blue-600"
+              className="w-32 h-32 rounded-full border-4 border-blue-600 object-cover"
             />
-            <h3 className="text-xl font-semibold mt-4 text-gray-800">{name}</h3>
+            <h3 className="text-xl font-semibold mt-4 text-gray-800">{profile.name || "Add your name"}</h3>
             <p className="text-gray-600">
-              {gender === "M" ? "Male" : "Female"}, {age} years
+              {profile.gender || "Gender"}, {profile.age || "--"} years
             </p>
           </div>
 
           {/* Right Side */}
-          <div className="flex flex-col w-2/3 space-y-2">
+          <div className="flex flex-col w-2/3 space-y-3">
             <p>
-              <span className="font-semibold">Phone:</span> {phone}
+              <span className="font-semibold">Phone:</span> {profile.phone || "Add a phone number"}
             </p>
             <p>
-              <span className="font-semibold">Email:</span> {email}
+              <span className="font-semibold">Email:</span> {profile.email || "Add an email"}
             </p>
             <p>
-              <span className="font-semibold">Address:</span> {address}
+              <span className="font-semibold">Address:</span> {profile.address || "Add an address"}
             </p>
             <p>
-              <span className="font-semibold">Blood Group:</span> {bloodGroup}
+              <span className="font-semibold">Blood Group:</span> {profile.bloodGroup || "Add blood group"}
             </p>
             <p>
               <span className="font-semibold">Emergency Contact:</span>{" "}
-              {emergencyContact}
+              {profile.emergencyContact || "Add emergency contact"}
             </p>
             <p>
               <span className="font-semibold">Medical History:</span>{" "}
-              {medicalHistory}
+              {profile.medicalHistory || "Share allergies, chronic conditions, or prior surgeries to help doctors prepare."}
             </p>
+
+            {error && <p className="text-red-600">{error}</p>}
+            {success && <p className="text-green-600">{success}</p>}
 
             <button
               onClick={() => setIsOpen(true)}
@@ -85,65 +170,84 @@ const PatientProfile = () => {
               ✕
             </button>
             <h2 className="text-lg font-bold mb-4">Edit Patient Profile</h2>
-            <form className="flex flex-col gap-3">
+            <form className="flex flex-col gap-3" onSubmit={updateProfile}>
               <input
                 type="text"
                 placeholder="Full Name"
-                defaultValue={name}
+                name="name"
+                value={profile.name}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="number"
                 placeholder="Age"
-                defaultValue={age}
+                name="age"
+                value={profile.age}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="text"
                 placeholder="Gender"
-                defaultValue={gender}
+                name="gender"
+                value={profile.gender}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="text"
                 placeholder="Phone"
-                defaultValue={phone}
+                name="phone"
+                value={profile.phone}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="email"
-                placeholder="Email"
-                defaultValue={email}
-                className="border rounded-lg px-3 py-2"
+                placeholder="Email (managed during login)"
+                name="email"
+                value={profile.email}
+                readOnly
+                className="border rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed"
               />
               <input
                 type="text"
                 placeholder="Address"
-                defaultValue={address}
+                name="address"
+                value={profile.address}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="text"
                 placeholder="Blood Group"
-                defaultValue={bloodGroup}
+                name="bloodGroup"
+                value={profile.bloodGroup}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <input
                 type="text"
                 placeholder="Emergency Contact"
-                defaultValue={emergencyContact}
+                name="emergencyContact"
+                value={profile.emergencyContact}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <textarea
                 placeholder="Medical History"
-                defaultValue={medicalHistory}
+                name="medicalHistory"
+                value={profile.medicalHistory}
+                onChange={handleChange}
                 className="border rounded-lg px-3 py-2"
               />
               <button
                 type="submit"
-                className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                disabled={saving}
+                className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
-                Save Changes
+                {saving ? "Saving..." : "Save Changes"}
               </button>
             </form>
           </div>

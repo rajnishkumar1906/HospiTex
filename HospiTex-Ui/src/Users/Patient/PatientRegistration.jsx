@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { usePatientContext } from '/src/context/PatientContext';
+import { usePatientContext } from '../../context/PatientContext';
 
 const PatientRegistration = () => {
   const [formData, setFormData] = useState({

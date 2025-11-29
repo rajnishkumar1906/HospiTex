@@ -26,16 +26,32 @@ const User = mongoose.model("User", userSchema);
 const patientSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
-  diagnosticReports: [{ type: mongoose.Schema.Types.ObjectId, ref: "DiagnosticReport" }]
-});
+  diagnosticReports: [{ type: mongoose.Schema.Types.ObjectId, ref: "DiagnosticReport" }],
+  phone: { type: String, default: "" },
+  age: { type: Number, default: null },
+  gender: { type: String, default: "" },
+  address: { type: String, default: "" },
+  bloodGroup: { type: String, default: "" },
+  emergencyContact: { type: String, default: "" },
+  medicalHistory: { type: String, default: "" }
+}, { timestamps: true });
 const Patient = mongoose.model("Patient", patientSchema);
 
 // --- Doctor Schema ---
 const doctorSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
-  prescriptions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Prescription" }]
-});
+  prescriptions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Prescription" }],
+  specialty: { type: String, default: "" },
+  category: { type: String, default: "general" },
+  experienceYears: { type: Number, default: 0 },
+  appointmentFee: { type: Number, default: 0 },
+  location: { type: String, default: "" },
+  about: { type: String, default: "" },
+  imageUrl: { type: String, default: "" },
+  contactNumber: { type: String, default: "" },
+  availability: { type: [String], default: [] }
+}, { timestamps: true });
 const Doctor = mongoose.model("Doctor", doctorSchema);
 
 // --- Diagnostic Center Schema ---

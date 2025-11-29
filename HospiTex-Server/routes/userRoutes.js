@@ -4,7 +4,9 @@ import {
   getUserProfile,
   updateUserProfile,
   getAllDoctors,
-  getAllDiagnostics
+  getAllDiagnostics,
+  updatePatientProfileDetails,
+  updateDoctorProfileDetails
 } from "../Controller/userController.js";
 import userAuth from "../middleware/userAuth.js";
 
@@ -19,6 +21,8 @@ router.use(userAuth);
 router.post("/profile/create", createUserProfile);
 router.get("/profile", getUserProfile);
 router.put("/profile", updateUserProfile);
+router.put("/profile/patient", updatePatientProfileDetails);
+router.put("/profile/doctor", updateDoctorProfileDetails);
 
 export default router;
 

@@ -25,9 +25,11 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      console.error('Unauthorized access - please login again');
+    // Only log 401 errors if they're unexpected (not from auth check endpoints)
+    const isAuthEndpoint = error.config?.url?.includes('/auth/');
+    if (error.response?.status === 401 && !isAuthEndpoint) {
+      // Unauthorized access on protected routes - this is expected if user isn't logged in
+      // Don't spam console with errors for expected behavior
     }
     return Promise.reject(error);
   }

@@ -1,53 +1,105 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../Auth/AppContext";
+import apiClient from "../../config/axios";
 
 const DoctorProfile = () => {
-  const { User, backendUrl } = useContext(AppContext);
+  const { User } = useContext(AppContext);
 
-  // Form state
   const [formData, setFormData] = useState({
-    name: User?.username || "Dr. Unknown",
-    specialization: "Gynecologist",
-    about:
-      "Dr. Smith has over 12 years of experience in gynecology, specializing in prenatal care, reproductive health, and advanced treatments. She is passionate about providing compassionate and personalized healthcare.",
-    location: "Apollo Hospital, New Delhi",
-    appointmentFee: "₹800",
-    contact: "+91 9876543210",
-    hours: "Mon - Sat: 9 AM - 6 PM",
+    name: User?.username || "",
+    specialty: "",
+    about: "",
+    location: "",
+    appointmentFee: "",
+    contactNumber: "",
+    availability: "",
+    experienceYears: "",
+    imageUrl: "",
   });
 
-  const experience = "12+ years";
-  const rating = "4.8 ★";
-
+  const [rating] = useState("4.8 ★");
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  // Handle input change
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const { data } = await apiClient.get("/api/users/profile");
+        const profile = data?.profile;
+        setFormData({
+          name: data?.user?.username || "",
+          specialty: profile?.specialty || "",
+          about: profile?.about || "",
+          location: profile?.location || "",
+          appointmentFee: profile?.appointmentFee?.toString() || "",
+          contactNumber: profile?.contactNumber || "",
+          availability: profile?.availability?.join(", ") || "",
+          experienceYears: profile?.experienceYears?.toString() || "",
+          imageUrl: profile?.imageUrl || "",
+        });
+      } catch (err) {
+        const message = err.response?.data?.message || "Unable to load your profile.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setSuccess(null);
+    setError(null);
   };
 
-  // Save/update user
   const updateUser = async (e) => {
     e.preventDefault();
+    setSaving(true);
+    setSuccess(null);
+    setError(null);
     try {
-      const res = await fetch(`${backendUrl}/doctor/update-profile`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        alert("Profile updated successfully!");
-        setIsOpen(false);
-      } else {
-        alert("Failed to update profile");
+      if (formData.name && formData.name !== User?.username) {
+        await apiClient.put("/api/users/profile", { username: formData.name });
       }
+
+      const payload = {
+        specialty: formData.specialty,
+        about: formData.about,
+        location: formData.location,
+        appointmentFee: Number(formData.appointmentFee) || 0,
+        contactNumber: formData.contactNumber,
+        experienceYears: Number(formData.experienceYears) || 0,
+        imageUrl: formData.imageUrl,
+        availability: formData.availability
+          ? formData.availability.split(",").map((slot) => slot.trim()).filter(Boolean)
+          : [],
+      };
+
+      await apiClient.put("/api/users/profile/doctor", payload);
+      setSuccess("Profile updated successfully!");
+      setIsOpen(false);
     } catch (err) {
-      console.error(err);
-      alert("Error updating profile");
+      const message = err.response?.data?.message || "Unable to update profile.";
+      setError(message);
+    } finally {
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">Loading your profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -57,39 +109,44 @@ const DoctorProfile = () => {
           {/* Left Side */}
           <div className="flex flex-col items-center w-1/3">
             <img
-              src="https://randomuser.me/api/portraits/men/1.jpg"
+              src={formData.imageUrl || "/Pictures/doctor-dashboard.png"}
               alt="Doctor"
-              className="w-32 h-32 rounded-full border-4 border-green-600"
+              className="w-32 h-32 rounded-full border-4 border-green-600 object-cover"
             />
             <h3 className="text-xl font-semibold mt-3 text-gray-800">
-              {formData.name}
+              {formData.name || "Add your name"}
             </h3>
             <p className="text-yellow-500 font-medium mt-1">{rating}</p>
-            <p className="text-gray-600">Experience: {experience}</p>
+            <p className="text-gray-600">
+              Experience: {formData.experienceYears ? `${formData.experienceYears} yrs` : "Add experience"}
+            </p>
           </div>
 
           {/* Right Side */}
           <div className="flex flex-col w-2/3">
             <p className="text-green-700 font-medium text-lg">
-              {formData.specialization}
+              {formData.specialty || "Add specialization"}
             </p>
-            <p className="text-gray-600 mt-2">{formData.about}</p>
+            <p className="text-gray-600 mt-2">{formData.about || "Tell patients more about your practice, treatment philosophy, and focus areas."}</p>
 
             <p className="text-gray-700 mt-3">
               <span className="font-semibold">Location:</span>{" "}
-              {formData.location}
+              {formData.location || "Not provided"}
             </p>
             <p className="text-gray-700">
               <span className="font-semibold">Appointment Fee:</span>{" "}
-              {formData.appointmentFee}
+              {formData.appointmentFee ? `₹${formData.appointmentFee}` : "Set a fee"}
             </p>
             <p className="text-gray-700">
-              <span className="font-semibold">Contact:</span> {formData.contact}
+              <span className="font-semibold">Contact:</span> {formData.contactNumber || "Add a contact number"}
             </p>
             <p className="text-gray-700">
-              <span className="font-semibold">Working Hours:</span>{" "}
-              {formData.hours}
+              <span className="font-semibold">Availability:</span>{" "}
+              {formData.availability || "Set available slots"}
             </p>
+
+            {error && <p className="text-red-600 mt-4">{error}</p>}
+            {success && <p className="text-green-600 mt-4">{success}</p>}
 
             <button
               onClick={() => setIsOpen(true)}
@@ -147,8 +204,8 @@ const DoctorProfile = () => {
               />
               <input
                 type="text"
-                name="specialization"
-                value={formData.specialization}
+                name="specialty"
+                value={formData.specialty}
                 onChange={handleChange}
                 placeholder="Specialization"
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
@@ -169,7 +226,7 @@ const DoctorProfile = () => {
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
               />
               <input
-                type="text"
+                type="number"
                 name="appointmentFee"
                 value={formData.appointmentFee}
                 onChange={handleChange}
@@ -178,26 +235,43 @@ const DoctorProfile = () => {
               />
               <input
                 type="text"
-                name="contact"
-                value={formData.contact}
+                name="contactNumber"
+                value={formData.contactNumber}
                 onChange={handleChange}
-                placeholder="Contact"
+                placeholder="Contact Number"
+                className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
+              />
+              <input
+                type="number"
+                name="experienceYears"
+                value={formData.experienceYears}
+                onChange={handleChange}
+                placeholder="Experience (years)"
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="text"
-                name="hours"
-                value={formData.hours}
+                name="availability"
+                value={formData.availability}
                 onChange={handleChange}
-                placeholder="Working Hours"
+                placeholder="Available slots (comma separated)"
+                className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
+              />
+              <input
+                type="text"
+                name="imageUrl"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                placeholder="Profile Image URL"
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500"
               />
 
               <button
                 type="submit"
-                className="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+                disabled={saving}
+                className="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
               >
-                Save Changes
+                {saving ? "Saving..." : "Save Changes"}
               </button>
             </form>
           </div>

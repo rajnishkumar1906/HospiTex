@@ -142,3 +142,88 @@ export const getAllDiagnostics = async (req, res) => {
   }
 };
 
+// ======================== UPDATE PATIENT PROFILE DETAILS ========================
+export const updatePatientProfileDetails = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const allowedFields = ["phone", "age", "gender", "address", "bloodGroup", "emergencyContact", "medicalHistory"];
+
+    const updates = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    let patient = await Patient.findOne({ user: userId });
+    if (!patient) {
+      patient = new Patient({ user: userId });
+    }
+
+    Object.assign(patient, updates);
+    await patient.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Patient profile updated successfully",
+      patient,
+    });
+  } catch (error) {
+    console.error("Update patient profile error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ======================== UPDATE DOCTOR PROFILE DETAILS ========================
+export const updateDoctorProfileDetails = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const allowedFields = [
+      "specialty",
+      "category",
+      "experienceYears",
+      "appointmentFee",
+      "location",
+      "about",
+      "imageUrl",
+      "contactNumber",
+      "availability",
+    ];
+
+    const updates = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    if (updates.category) {
+      updates.category = updates.category.toLowerCase();
+    }
+
+    if (updates.availability && !Array.isArray(updates.availability)) {
+      updates.availability = String(updates.availability)
+        .split(",")
+        .map((slot) => slot.trim())
+        .filter(Boolean);
+    }
+
+    let doctor = await Doctor.findOne({ user: userId });
+    if (!doctor) {
+      doctor = new Doctor({ user: userId });
+    }
+
+    Object.assign(doctor, updates);
+    await doctor.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor profile updated successfully",
+      doctor,
+    });
+  } catch (error) {
+    console.error("Update doctor profile error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+

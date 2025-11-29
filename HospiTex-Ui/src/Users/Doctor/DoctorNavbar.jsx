@@ -2,7 +2,9 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../Auth/AppContext";
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Phone, User, LogOut, Menu, X, Stethoscope } from 'lucide-react';
+// ✅ FIXED: Rename User icon to avoid conflict with User from context
+import { Home, Phone, User as UserIcon, LogOut, Menu, X, Stethoscope } from 'lucide-react';
+import apiClient from '../../config/axios';
 
 function DoctorNavbar() {
   const { IsLoggedIn, setIsLoggedIn, setUserRole, User } = useContext(AppContext);
@@ -14,11 +16,17 @@ function DoctorNavbar() {
 
   const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : "";
 
-  const handleLogout = () => {
-    setDropdownOpen(false);
-    setIsLoggedIn(false);
-    setUserRole("");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setDropdownOpen(false);
+      setIsLoggedIn(false);
+      setUserRole(null);
+      navigate("/");
+    }
   };
 
   useEffect(() => {
@@ -31,7 +39,13 @@ function DoctorNavbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
+  const isActive = (path) => {
+    if (path === '/doctor-dashboard/' || path === '/doctor-dashboard') {
+      return location.pathname === '/doctor-dashboard' || 
+             location.pathname === '/doctor-dashboard/';
+    }
+    return location.pathname === path;
+  };
 
   return (
     <nav className="w-full shadow-lg bg-white/95 backdrop-blur-md fixed top-0 z-50 border-b border-gray-100">
@@ -59,7 +73,7 @@ function DoctorNavbar() {
             <Link
               to="/doctor-dashboard/"
               className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                isActive('/doctor-dashboard/') || isActive('/doctor-dashboard')
+                isActive('/doctor-dashboard/')
                   ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-lg'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
@@ -101,10 +115,11 @@ function DoctorNavbar() {
                     >
                       <Link
                         to="/doctor-dashboard/profile"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 transition-colors"
                         onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 transition-colors"
                       >
-                        <User className="w-4 h-4" />
+                        {/* ✅ FIXED: Use UserIcon instead of User */}
+                        <UserIcon className="w-4 h-4" />
                         View Profile
                       </Link>
                       <div className="border-t border-gray-100"></div>
@@ -145,7 +160,7 @@ function DoctorNavbar() {
               <Link
                 to="/doctor-dashboard/"
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive('/doctor-dashboard/') || isActive('/doctor-dashboard')
+                  isActive('/doctor-dashboard/')
                     ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
@@ -170,10 +185,11 @@ function DoctorNavbar() {
                 <>
                   <Link
                     to="/doctor-dashboard/profile"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
                     onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
                   >
-                    <User className="w-5 h-5" />
+                    {/* ✅ FIXED: Use UserIcon instead of User */}
+                    <UserIcon className="w-5 h-5" />
                     View Profile
                   </Link>
                   <button

@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../Auth/AppContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Phone, User, LogOut, Menu, X, FileText, TestTube } from 'lucide-react';
+import apiClient from '../../config/axios';
 
 function DiagnosticNavbar() {
   const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
@@ -13,11 +14,17 @@ function DiagnosticNavbar() {
 
   const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : '';
 
-  const handleLogout = () => {
-    setDropdownOpen(false);
-    setIsLoggedIn(false);
-    setUserRole('');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setDropdownOpen(false);
+      setIsLoggedIn(false);
+      setUserRole(null);
+      navigate('/');
+    }
   };
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
@@ -113,7 +120,7 @@ function DiagnosticNavbar() {
                       className="absolute right-0 mt-2 w-48 bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-100 z-50"
                     >
                       <Link
-                        to="/diagnostic-dashboard/diagnoctic-profile"
+                        to="/diagnostic-dashboard/diagnostic-profile"
                         className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors"
                         onClick={() => setDropdownOpen(false)}
                       >
@@ -206,7 +213,7 @@ function DiagnosticNavbar() {
               {IsLoggedIn && (
                 <>
                   <Link
-                    to="/diagnostic-dashboard/diagnoctic-profile"
+                    to="/diagnostic-dashboard/diagnostic-profile"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
                     onClick={() => setMobileMenuOpen(false)}
                   >
