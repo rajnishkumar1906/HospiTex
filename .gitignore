@@ -1,21 +1,28 @@
-# Dependency directories
-Hospitex-Server/node_modules/
-Hospitex-Ui/node_modules/
-Hospitex-Ui/.env
-Hospitex-Server/.env
+# Node modules
+node_modules/
+HospiTex-Server/node_modules/
+HospiTex-Ui/node_modules/
 
-# Python venv
-venv/
-MyBot/venv/
-
-# Files created by package managers
-package-lock.json
-
-# Log files
-*.log
-
-
-
+# Environment files
+.env
 HospiTex-Server/.env
 HospiTex-Ui/.env
 MyBot/.env
+
+# Python
+venv/
+MyBot/venv/
+__pycache__/
+*.pyc
+
+# Database
+*.db
+*.sqlite3
+MyBot/database/medibot.db
+MyBot/data/vector_store/
+
+# Logs
+*.log
+
+# Package locks
+package-lock.json
