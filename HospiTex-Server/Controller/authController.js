@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import {User, Patient, Doctor, Diagnostic} from '../models/schema.js'
+import {User, Patient, Doctor, Diagnostic, Admin} from '../models/schema.js'
 import transporter from "../config/nodemailer.js";
 import dotenv from "dotenv";
+import { welcomeEmailTemplate, otpEmailTemplate, verificationEmailTemplate, loginNotificationEmailTemplate } from '../utils/emailTemplates.js';
 
 dotenv.config();
 
@@ -26,12 +27,15 @@ export const signUp = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Patients are auto-verified, Doctors and Diagnostics need admin verification
+    const isAccountVerified = role === "Patient" ? true : false;
+
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      role, // store as-is: Patient, Doctor, Diagnostic
-      isAccountVerified: false,
+      role, // store as-is: Patient, Doctor, Diagnostic, Admin
+      isAccountVerified,
     });
 
     await newUser.save();
@@ -47,6 +51,9 @@ export const signUp = async (req, res) => {
       } else if (newUser.role === "Diagnostic") {
         const diagnostic = new Diagnostic({ user: newUser._id });
         await diagnostic.save();
+      } else if (newUser.role === "Admin") {
+        const admin = new Admin({ user: newUser._id });
+        await admin.save();
       }
     } catch (profileError) {
       console.error("Profile creation error:", profileError);
@@ -62,12 +69,13 @@ export const signUp = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // Send professional welcome email
     try {
       await transporter.sendMail({
         from: process.env.SENDER_EMAIL,
         to: email,
-        subject: "Welcome to HospiTex",
-        text: `Hello ${username}, you have successfully registered on HospiTex!`,
+        subject: "Welcome to HospiTex - Your Healthcare Journey Begins",
+        html: welcomeEmailTemplate(username, role),
       });
     } catch (err) {
       console.error("Email send failed:", err.message);
@@ -108,12 +116,14 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // Send login notification email (optional, can be disabled in production)
     try {
+      const loginTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
       await transporter.sendMail({
         from: process.env.SENDER_EMAIL,
         to: email,
-        subject: "Welcome Back to HospiTex",
-        text: `Hello ${user.username}, you have successfully logged in!`,
+        subject: "Login Notification - HospiTex",
+        html: loginNotificationEmailTemplate(user.username, loginTime),
       });
     } catch (err) {
       console.error("Login email failed:", err.message);
@@ -157,8 +167,8 @@ export const sendVerifyOTP = async (req, res) => {
     await transporter.sendMail({
       from: process.env.SENDER_EMAIL,
       to: user.email,
-      subject: "Account Verification OTP",
-      text: `Hello ${user.username}, your OTP is: ${otp}. It expires in 5 minutes.`,
+      subject: "Email Verification OTP - HospiTex",
+      html: otpEmailTemplate(user.username, otp, 'verification'),
     });
 
     return res.status(200).json({ success: true, message: "OTP sent successfully" });
@@ -220,8 +230,8 @@ export const sendResetOtp = async (req, res) => {
     await transporter.sendMail({
       from: process.env.SENDER_EMAIL,
       to: user.email,
-      subject: "Password Reset OTP",
-      text: `Hello ${user.username}, your OTP to reset your password is: ${otp}. It expires in 15 minutes.`,
+      subject: "Password Reset OTP - HospiTex",
+      html: otpEmailTemplate(user.username, otp, 'reset'),
     });
 
     return res.status(200).json({ success: true, message: "OTP sent to email" });

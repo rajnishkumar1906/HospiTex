@@ -1,4 +1,5 @@
 import { DiagnosticReport, User, Diagnostic, Patient } from '../models/schema.js';
+import { createNotification } from './notificationController.js';
 
 // ======================== BOOK DIAGNOSTIC TEST ========================
 export const bookDiagnosticTest = async (req, res) => {
@@ -40,6 +41,28 @@ export const bookDiagnosticTest = async (req, res) => {
     // Add to diagnostic center's reports
     diagnostic.diagnosticReports.push(report._id);
     await diagnostic.save();
+
+    // Get patient user info
+    const patientUser = await User.findById(userId);
+
+    // Create notifications
+    await createNotification(
+      diagnosticId,
+      "New Test Booking",
+      `${patientUser?.username || 'A patient'} has booked a ${testName} test for ${new Date(testDate).toLocaleDateString()}`,
+      "report",
+      `/diagnostic-dashboard/reports-services`,
+      report._id
+    );
+
+    await createNotification(
+      userId,
+      "Test Booked",
+      `Your ${testName} test is scheduled for ${new Date(testDate).toLocaleDateString()}`,
+      "success",
+      `/patient-dashboard/diagnostic-services`,
+      report._id
+    );
 
     return res.status(201).json({
       success: true,
@@ -120,6 +143,18 @@ export const updateDiagnosticReport = async (req, res) => {
     if (notes !== undefined) report.notes = notes;
 
     await report.save();
+
+    // Notify patient when report is completed
+    if (status === "Completed") {
+      await createNotification(
+        report.patient,
+        "Test Report Ready",
+        `Your ${report.testName} test report is now available. Click to view.`,
+        "report",
+        `/patient-dashboard/diagnostic-services`,
+        report._id
+      );
+    }
 
     return res.status(200).json({
       success: true,

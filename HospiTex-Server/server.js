@@ -10,6 +10,8 @@ import prescriptionRoutes from './routes/prescriptionRoutes.js';
 import diagnosticRoutes from './routes/diagnosticRoutes.js';
 import ambulanceRoutes from './routes/ambulanceRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -37,6 +39,8 @@ app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/diagnostics", diagnosticRoutes);
 app.use("/api/ambulance", ambulanceRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // User
 

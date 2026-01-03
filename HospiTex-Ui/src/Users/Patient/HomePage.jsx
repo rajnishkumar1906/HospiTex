@@ -72,7 +72,7 @@ function HomePage() {
         <Ambulance />
       </div>
 
-      {/* contactRef is sticked to Contat component */}
+      {/* contactRef is sticked to Contact component */}
       <div ref={contactRef}>
         <Contacts />
       </div>

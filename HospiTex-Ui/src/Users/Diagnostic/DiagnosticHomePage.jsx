@@ -4,8 +4,8 @@ import { useLocation } from "react-router-dom";
 import DiagnosticHome from "./DiagnosticHome";
 import DiagnosticReportsOverview from "./DiagnosticReportsOverview";
 import DiagnosticTestsOverview from "./DiagnosticTestsOverview";
-import DiagnosticContact from "./DiagnosticContact";
 import MediBot from "../../Medibot/MediBot";
+import DiagnosticNavbar from "../Diagnostic/DiagnosticNavbar";
 
 const DiagnosticHomePage = () => {
   const location = useLocation();
@@ -13,7 +13,6 @@ const DiagnosticHomePage = () => {
   const homeRef = useRef(null);
   const reportsRef = useRef(null);
   const testsRef = useRef(null);
-  const contactsRef = useRef(null);
 
   useEffect(() => {
     const scrollToRef = (ref) => {
@@ -32,9 +31,6 @@ const DiagnosticHomePage = () => {
       case "/diagnostic-dashboard/tests":
         scrollToRef(testsRef);
         break;
-      case "/diagnostic-dashboard/contacts":
-        scrollToRef(contactsRef);
-        break;
       default:
         scrollToRef(homeRef);
     }
@@ -42,6 +38,8 @@ const DiagnosticHomePage = () => {
 
   return (
     <div>
+      <DiagnosticNavbar/>
+
       <div ref={homeRef}>
         <DiagnosticHome />
       </div>
@@ -52,10 +50,6 @@ const DiagnosticHomePage = () => {
 
       <div ref={testsRef}>
         <DiagnosticTestsOverview />
-      </div>
-
-      <div ref={contactsRef}>
-        <DiagnosticContact />
       </div>
 
       <MediBot />

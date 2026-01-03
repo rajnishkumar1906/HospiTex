@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
       enum: ["Patient", "Doctor", "Diagnostic", "Admin"], 
       required: true 
     },
+    // Location fields for pan-India system
+    state: { type: String, default: "" }, // Required for Doctor, Diagnostic, Admin
+    district: { type: String, default: "" }, // Required for Doctor, Diagnostic, District Admin
     verifyOtp: { type: String, default: "" },
     verifyOtpExpireAt: { type: Date, default: null },
     isAccountVerified: { type: Boolean, default: false },
@@ -47,6 +50,8 @@ const doctorSchema = new mongoose.Schema({
   experienceYears: { type: Number, default: 0 },
   appointmentFee: { type: Number, default: 0 },
   location: { type: String, default: "" },
+  state: { type: String, default: "" }, // Required - for district admin verification
+  district: { type: String, default: "" }, // Required - for district admin verification
   about: { type: String, default: "" },
   imageUrl: { type: String, default: "" },
   contactNumber: { type: String, default: "" },
@@ -58,15 +63,30 @@ const Doctor = mongoose.model("Doctor", doctorSchema);
 const diagnosticSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   diagnosticReports: [{ type: mongoose.Schema.Types.ObjectId, ref: "DiagnosticReport" }],
-  patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
-});
+  patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  state: { type: String, default: "" }, // Required - for district admin verification
+  district: { type: String, default: "" }, // Required - for district admin verification
+  centerName: { type: String, default: "" },
+  address: { type: String, default: "" },
+  contactNumber: { type: String, default: "" }
+}, { timestamps: true });
 const Diagnostic = mongoose.model("Diagnostic", diagnosticSchema);
 
-// --- Admin Schema (optional role-specific details) ---
+// --- Admin Schema (with hierarchy: State Admin and District Admin) ---
 const adminSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   
-  // Track all users by role
+  // Admin hierarchy for pan-India system
+  adminLevel: { 
+    type: String, 
+    enum: ["State", "District"], 
+    required: true,
+    default: "District"
+  }, // State Admin or District Admin
+  state: { type: String, required: true }, // Required for both State and District Admin
+  district: { type: String, default: "" }, // Required for District Admin, null for State Admin
+  
+  // Track all users by role (filtered by district/state based on adminLevel)
   patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
   doctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Doctor" }],
   diagnostics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Diagnostic" }],
@@ -75,7 +95,7 @@ const adminSchema = new mongoose.Schema({
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
   prescriptions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Prescription" }],
   diagnosticReports: [{ type: mongoose.Schema.Types.ObjectId, ref: "DiagnosticReport" }]
-});
+}, { timestamps: true });
 
 const Admin = mongoose.model("Admin", adminSchema);
 
@@ -159,7 +179,24 @@ const ambulanceSchema = new mongoose.Schema({
 
 const Ambulance = mongoose.model("Ambulance", ambulanceSchema);
 
+// --- Notification Schema ---
+const notificationSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  title: { type: String, required: true },
+  message: { type: String, required: true },
+  type: { 
+    type: String, 
+    enum: ["info", "success", "warning", "error", "appointment", "verification", "report"],
+    default: "info"
+  },
+  link: { type: String, default: "" },
+  isRead: { type: Boolean, default: false },
+  relatedId: { type: mongoose.Schema.Types.ObjectId } // ID of related entity (appointment, etc.)
+}, { timestamps: true });
+
+const Notification = mongoose.model("Notification", notificationSchema);
+
 export { 
   User, Patient, Doctor, Diagnostic, Admin,
-  Appointment, Prescription, DiagnosticReport, Ambulance
+  Appointment, Prescription, DiagnosticReport, Ambulance, Notification
 };

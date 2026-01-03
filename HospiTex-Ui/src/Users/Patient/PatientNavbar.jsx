@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // ✅ FIXED: Rename User icon to UserIcon to avoid conflict
 import { Home, Phone, User as UserIcon, Calendar, LogOut, Menu, X } from 'lucide-react';
 import apiClient from '../../config/axios';
+import NotificationBell from '../../components/NotificationBell';
 
 function PatientNavbar() {
   const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
@@ -95,6 +96,12 @@ function PatientNavbar() {
               <Phone className="w-4 h-4" />
               Contact
             </Link>
+
+            {IsLoggedIn && (
+              <div className="ml-2">
+                <NotificationBell />
+              </div>
+            )}
 
             {IsLoggedIn && userInitial && (
               <div className="relative ml-4" ref={dropdownRef}>

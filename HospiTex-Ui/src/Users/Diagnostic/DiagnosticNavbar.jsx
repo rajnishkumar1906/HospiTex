@@ -1,47 +1,84 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AppContext } from '../../Auth/AppContext';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Phone, User, LogOut, Menu, X, FileText, TestTube } from 'lucide-react';
-import apiClient from '../../config/axios';
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { AppContext } from "../../Auth/AppContext";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ✅ FIXED: Rename User icon to avoid conflict with User from context
+import {
+  Home,
+  User as UserIcon,
+  LogOut,
+  Menu,
+  X,
+  FileText,
+  TestTube
+} from "lucide-react";
+
+import apiClient from "../../config/axios";
+import NotificationBell from "../../components/NotificationBell";
 
 function DiagnosticNavbar() {
-  const { IsLoggedIn, setIsLoggedIn, UserRole, setUserRole, User } = useContext(AppContext);
+  const { IsLoggedIn, setIsLoggedIn, setUserRole, User } =
+    useContext(AppContext);
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const userInitial = User?.username ? User.username.charAt(0).toUpperCase() : '';
+  const dropdownRef = useRef(null);
 
+  const userInitial = User?.username
+    ? User.username.charAt(0).toUpperCase()
+    : "";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Logout handler
   const handleLogout = async () => {
     try {
-      await apiClient.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
+      await apiClient.post("/auth/logout");
+    } catch (err) {
+      console.error("Logout error:", err);
     } finally {
       setDropdownOpen(false);
       setIsLoggedIn(false);
       setUserRole(null);
-      navigate('/');
+      navigate("/");
     }
   };
 
-  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
+  // Match /path and /path/
+  const isActive = (path) =>
+    location.pathname === path ||
+    location.pathname === path + "/" ||
+    location.pathname.startsWith(path + "/");
 
   return (
     <nav className="w-full shadow-lg bg-white/95 backdrop-blur-md fixed top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-2 cursor-pointer"
-            onClick={() => navigate('/diagnostic-dashboard/')}
+            onClick={() => navigate("/diagnostic-dashboard/")}
           >
             <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
               <TestTube className="w-5 h-5 text-white" />
             </div>
+
             <div className="flex items-baseline">
               <span className="text-2xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 Hospi
@@ -50,14 +87,19 @@ function DiagnosticNavbar() {
             </div>
           </motion.div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-1">
+
             <Link
-              to="/diagnostic-dashboard"
+              to="/diagnostic-dashboard/"
               className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                isActive('/diagnostic-dashboard') && !location.pathname.includes('reports') && !location.pathname.includes('tests') && !location.pathname.includes('contacts') && !location.pathname.includes('profile')
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-gray-100'
+                isActive("/diagnostic-dashboard") &&
+                !location.pathname.includes("reports") &&
+                !location.pathname.includes("tests") &&
+                !location.pathname.includes("contacts") &&
+                !location.pathname.includes("profile")
+                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg"
+                  : "text-gray-700 hover:bg-gray-100"
               }`}
             >
               <Home className="w-4 h-4" />
@@ -65,11 +107,11 @@ function DiagnosticNavbar() {
             </Link>
 
             <Link
-              to="/diagnostic-dashboard/reports-services"
+              to="/diagnostic-dashboard/reports"
               className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                isActive('/diagnostic-dashboard/reports')
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-gray-100'
+                isActive("/diagnostic-dashboard/reports")
+                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg"
+                  : "text-gray-700 hover:bg-gray-100"
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -77,31 +119,26 @@ function DiagnosticNavbar() {
             </Link>
 
             <Link
-              to="/diagnostic-dashboard/tests-services"
+              to="/diagnostic-dashboard/tests"
               className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                isActive('/diagnostic-dashboard/tests')
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-gray-100'
+                isActive("/diagnostic-dashboard/tests")
+                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg"
+                  : "text-gray-700 hover:bg-gray-100"
               }`}
             >
               <TestTube className="w-4 h-4" />
               Tests
             </Link>
 
-            <Link
-              to="/diagnostic-dashboard/contacts"
-              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                isActive('/diagnostic-dashboard/contacts')
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <Phone className="w-4 h-4" />
-              Contact
-            </Link>
+            {IsLoggedIn && (
+              <div className="ml-2">
+                <NotificationBell />
+              </div>
+            )}
 
+            {/* User Dropdown */}
             {IsLoggedIn && userInitial && (
-              <div className="relative ml-4">
+              <div className="relative ml-4" ref={dropdownRef}>
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -121,13 +158,16 @@ function DiagnosticNavbar() {
                     >
                       <Link
                         to="/diagnostic-dashboard/diagnostic-profile"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors"
                         onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-colors"
                       >
-                        <User className="w-4 h-4" />
+                        {/* ✅ FIX: icon renamed */}
+                        <UserIcon className="w-4 h-4" />
                         View Profile
                       </Link>
-                      <div className="border-t border-gray-100"></div>
+
+                      <div className="border-t border-gray-100" />
+
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
@@ -157,69 +197,66 @@ function DiagnosticNavbar() {
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-white border-t border-gray-100"
           >
             <div className="px-4 py-4 space-y-2">
+
               <Link
-                to="/diagnostic-dashboard"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive('/diagnostic-dashboard') && !location.pathname.includes('reports') && !location.pathname.includes('tests') && !location.pathname.includes('contacts') && !location.pathname.includes('profile')
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
+                to="/diagnostic-dashboard/"
                 onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive("/diagnostic-dashboard") &&
+                  !location.pathname.includes("reports") &&
+                  !location.pathname.includes("tests") &&
+                  !location.pathname.includes("profile")
+                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
               >
                 <Home className="w-5 h-5" />
                 Home
               </Link>
+
               <Link
-                to="/diagnostic-dashboard/reports-services"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive('/diagnostic-dashboard/reports')
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
+                to="/diagnostic-dashboard/reports"
                 onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive("/diagnostic-dashboard/reports")
+                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
               >
                 <FileText className="w-5 h-5" />
                 Reports
               </Link>
+
               <Link
-                to="/diagnostic-dashboard/tests-services"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive('/diagnostic-dashboard/tests')
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
+                to="/diagnostic-dashboard/tests"
                 onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive("/diagnostic-dashboard/tests")
+                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
               >
                 <TestTube className="w-5 h-5" />
                 Tests
               </Link>
-              <Link
-                to="/diagnostic-dashboard/contacts"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${
-                  isActive('/diagnostic-dashboard/contacts')
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Phone className="w-5 h-5" />
-                Contact
-              </Link>
+
               {IsLoggedIn && (
                 <>
                   <Link
                     to="/diagnostic-dashboard/diagnostic-profile"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
                     onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 font-semibold"
                   >
-                    <User className="w-5 h-5" />
+                    {/* ✅ FIX: icon renamed */}
+                    <UserIcon className="w-5 h-5" />
                     View Profile
                   </Link>
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 font-semibold"

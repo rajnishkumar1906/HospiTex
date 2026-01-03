@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaNotesMedical, FaClipboardList, FaCalendarCheck, FaSearch, FaLock } from "react-icons/fa";
+import DoctorNavbar from "./DoctorNavbar";
 
 const DoctorPatientRecordsServices = () => {
   const services = [
@@ -37,7 +38,9 @@ const DoctorPatientRecordsServices = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-green-50 to-white px-8 py-16">
+    <div className="flex h-screen bg-gradient-to-br from-green-50 to-white overflow-hidden">
+      <DoctorNavbar />
+      <section className="flex-1 overflow-y-auto overflow-x-hidden px-8 py-16">
       {/* Header */}
       <h2 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-4 text-center drop-shadow-md">
         Patient Records Management Tools
@@ -69,7 +72,8 @@ const DoctorPatientRecordsServices = () => {
           Go to Patient Records
         </Link>
       </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

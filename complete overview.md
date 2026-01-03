@@ -85,19 +85,21 @@
 **Access**: `/patient-dashboard`
 
 **Features**:
-- ✅ **Book Appointments** - Select doctor, date, time
+- ✅ **Book Appointments** - Select doctor, date, time (auto-confirmed)
 - ✅ **View Appointment History** - See all past/upcoming appointments
 - ✅ **Diagnostic Services** - Book lab tests, view reports
 - ✅ **Ambulance Request** - Emergency ambulance booking
 - ✅ **Profile Management** - Update personal information
+- ✅ **Notifications** - Real-time notification system
 - ✅ **MediBot Chat** - AI assistant for questions
+- ✅ **Auto-Verified** - Patients are automatically verified upon signup
 
 **Navigation**:
 - Home
 - Book Appointment
 - Diagnostic Services
 - Ambulance
-- Contact
+- Contact (enabled for patients)
 - Profile
 - Appointment History
 
@@ -112,24 +114,33 @@
 **Access**: `/doctor-dashboard`
 
 **Features**:
-- ✅ **View Appointments** - See all patient appointments
-- ✅ **Confirm/Complete Appointments** - Manage appointment status
-- ✅ **Patient Records** - View patient medical history
+- ✅ **Sidebar Navigation** - Professional left sidebar for easy access
+- ✅ **View Appointments** - See all patient appointments with statistics
+- ✅ **Manage Appointments** - Confirm, Complete, or Cancel appointments
+- ✅ **Patient Records** - View and manage patient medical history
 - ✅ **Create Prescriptions** - Issue medications to patients
-- ✅ **Profile Management** - Update doctor information
+- ✅ **Profile Management** - Professional profile page design
+- ✅ **Notifications** - Real-time notification system
 - ✅ **MediBot Chat** - AI assistant for medical queries
+- ✅ **Requires Verification** - Must be verified by District Admin
 
-**Navigation**:
+**Navigation (Sidebar)**:
 - Home
-- Appointments
-- Patient Records
-- Contacts
-- Profile
+- Appointments (full management page)
+- Patient Records (full management page)
+- Quick Access:
+  - Appointments Overview (scroll to section)
+  - Records Overview (scroll to section)
+- Profile (via user dropdown)
+- Notifications (bell icon)
 
 **Key Files**:
 - `HospiTex-Ui/src/Users/Doctor/DoctorHomePage.jsx`
-- `HospiTex-Ui/src/Users/Doctor/DoctorNavbar.jsx`
+- `HospiTex-Ui/src/Users/Doctor/DoctorNavbar.jsx` (Sidebar navigation)
+- `HospiTex-Ui/src/Users/Doctor/DoctorHome.jsx`
 - `HospiTex-Ui/src/Users/Doctor/DoctorAppointmentServices.jsx`
+- `HospiTex-Ui/src/Users/Doctor/DoctorPatientRecordsServices.jsx`
+- `HospiTex-Ui/src/Users/Doctor/DoctorProfile.jsx`
 
 ---
 
@@ -142,19 +153,52 @@
 - ✅ **Manage Tests** - Update test status
 - ✅ **Patient Reports** - View all diagnostic reports
 - ✅ **Profile Management** - Update diagnostic center info
+- ✅ **Notifications** - Real-time notification system
 - ✅ **MediBot Chat** - AI assistant for diagnostic queries
+- ✅ **Requires Verification** - Must be verified by District Admin
 
 **Navigation**:
 - Home
 - Reports
 - Tests
-- Contacts
 - Profile
 
 **Key Files**:
 - `HospiTex-Ui/src/Users/Diagnostic/DiagnosticHomePage.jsx`
 - `HospiTex-Ui/src/Users/Diagnostic/DiagnosticNavbar.jsx`
 - `HospiTex-Ui/src/Users/Diagnostic/DiagnosticReportsServices.jsx`
+
+---
+
+### 🟣 **Admin Dashboard** (Pan-India System)
+**Access**: `/admin-dashboard`
+
+**Features**:
+- ✅ **Hierarchical Admin System** - State Admin and District Admin levels
+- ✅ **User Management** - View and manage all users
+- ✅ **Verification System** - Verify doctors and diagnostics with detailed review
+- ✅ **Dashboard Statistics** - View user counts and pending verifications
+- ✅ **Verification Review Modal** - Detailed information before verification
+- ✅ **Notifications** - Real-time notification system
+- ✅ **Multiple Admins** - Support for multiple admins working together
+- ✅ **Auto-Verified** - Admins are automatically verified upon signup
+
+**Admin Levels**:
+- **State Admin**: Manages entire state, can view all districts
+- **District Admin**: Manages specific district, verifies doctors/diagnostics in their district
+
+**Navigation**:
+- Home
+- Users (overview and detailed management)
+- Profile
+
+**Key Files**:
+- `HospiTex-Ui/src/Users/Admin/AdminHomePage.jsx`
+- `HospiTex-Ui/src/Users/Admin/AdminNavbar.jsx`
+- `HospiTex-Ui/src/Users/Admin/AdminHome.jsx`
+- `HospiTex-Ui/src/Users/Admin/AdminUsersServices.jsx`
+- `HospiTex-Ui/src/Users/Admin/VerificationReviewModal.jsx`
+- `HospiTex-Ui/src/Users/Admin/AdminProfile.jsx`
 
 ---
 
@@ -165,23 +209,23 @@
 ```
 1. Patient logs in → Redirected to Patient Dashboard
    ↓
-2. Clicks "Book Appointment" → Sees list of doctors
+2. Clicks "Book Appointment" → Sees list of doctors with available slots
    ↓
-3. Selects a doctor → Chooses date & time
+3. Selects a doctor → Chooses date & available time slot
    ↓
 4. Clicks "Book Appointment" → API call to /api/appointments/book
    ↓
-5. Server creates appointment with status "Pending"
+5. Server creates appointment with status "Confirmed" (auto-confirmed, no admin approval)
    ↓
-6. Doctor sees appointment in their dashboard
+6. Patient receives notification (via email/UI notification)
    ↓
-7. Doctor confirms → Status changes to "Confirmed"
+7. Doctor sees appointment in their dashboard
    ↓
-8. Patient receives notification (via email/UI)
+8. Appointment day → Doctor marks as "Completed"
    ↓
-9. Appointment day → Doctor marks as "Completed"
+9. Doctor creates prescription if needed
    ↓
-10. Doctor creates prescription if needed
+10. Patient receives notification for prescription
 ```
 
 **API Flow**:
@@ -269,28 +313,81 @@ React UI → POST /medibot/ask
 ## 🎯 Features & Functionality
 
 ### **Authentication System**
-- ✅ User Registration (Patient/Doctor/Diagnostic)
+- ✅ User Registration (Patient/Doctor/Diagnostic/Admin)
 - ✅ Login/Logout
-- ✅ Email Verification (OTP)
-- ✅ Password Reset
+- ✅ Email Verification (OTP) with professional HTML templates
+- ✅ Password Reset with OTP
 - ✅ JWT Token-based authentication
 - ✅ Role-based access control
 - ✅ Secure cookie management
+- ✅ Auto-verification for Patients and Admins
+- ✅ Admin verification required for Doctors and Diagnostics
 
 **Files**:
 - `HospiTex-Server/Controller/authController.js`
 - `HospiTex-Server/routes/authRoutes.js`
+- `HospiTex-Server/utils/emailTemplates.js`
 - `HospiTex-Ui/src/Auth/Login.jsx`
 
 ---
 
+### **Admin System (Pan-India)**
+- ✅ Hierarchical admin system (State Admin and District Admin)
+- ✅ User management and verification
+- ✅ Verification review modal with detailed information
+- ✅ Dashboard statistics
+- ✅ Multiple admins support
+- ✅ Location-based access control (District Admin verifies users in their district)
+- ✅ Professional admin dashboard
+
+**Files**:
+- `HospiTex-Server/Controller/adminController.js`
+- `HospiTex-Server/routes/adminRoutes.js`
+- `HospiTex-Ui/src/Users/Admin/AdminHomePage.jsx`
+- `HospiTex-Ui/src/Users/Admin/AdminUsersServices.jsx`
+- `HospiTex-Ui/src/Users/Admin/VerificationReviewModal.jsx`
+
+---
+
+### **Notification System**
+- ✅ Real-time notification system across all dashboards
+- ✅ NotificationBell component in all navbars
+- ✅ Mark as read/unread functionality
+- ✅ Delete notifications
+- ✅ Notification counts
+- ✅ Notifications for appointments, verifications, prescriptions, diagnostic reports, etc.
+
+**Files**:
+- `HospiTex-Server/Controller/notificationController.js`
+- `HospiTex-Server/routes/notificationRoutes.js`
+- `HospiTex-Ui/src/components/NotificationBell.jsx`
+
+---
+
+### **Email System**
+- ✅ Professional HTML email templates
+- ✅ Welcome emails upon registration
+- ✅ Login notification emails
+- ✅ OTP verification emails
+- ✅ Password reset emails
+- ✅ Verification status emails
+- ✅ Modern, responsive email design
+
+**Files**:
+- `HospiTex-Server/utils/emailTemplates.js`
+- `HospiTex-Server/Controller/authController.js`
+
+---
+
 ### **Appointment Management**
-- ✅ Book appointments
+- ✅ Book appointments with available time slot checking
 - ✅ View appointment history
 - ✅ Cancel appointments
-- ✅ Doctor confirmation workflow
-- ✅ Status tracking (Pending → Confirmed → Completed)
-- ✅ Email notifications
+- ✅ Auto-confirmed appointments (no admin approval needed)
+- ✅ Doctor manages appointments (Confirm, Complete, Cancel)
+- ✅ Status tracking (Confirmed → Completed/Cancelled)
+- ✅ Real-time availability display
+- ✅ Email and UI notifications
 
 **Files**:
 - `HospiTex-Server/Controller/appointmentController.js`
@@ -714,18 +811,32 @@ HospiTex-Ui/
 │   │   │       └── AmbulanceServices.jsx
 │   │   ├── Doctor/
 │   │   │   ├── DoctorHomePage.jsx
-│   │   │   ├── DoctorNavbar.jsx
+│   │   │   ├── DoctorNavbar.jsx        # Sidebar navigation
+│   │   │   ├── DoctorHome.jsx
+│   │   │   ├── DoctorProfile.jsx
 │   │   │   ├── DoctorAppointmentServices.jsx
-│   │   │   └── DoctorPatientRecordsServices.jsx
-│   │   └── Diagnostic/
-│   │       ├── DiagnosticHomePage.jsx
-│   │       ├── DiagnosticNavbar.jsx
-│   │       ├── DiagnosticReportsServices.jsx
-│   │       └── DiagnosticTestsServices.jsx
+│   │   │   ├── DoctorAppointmentsOverview.jsx
+│   │   │   ├── DoctorPatientRecordsServices.jsx
+│   │   │   └── DoctorPatientRecordsOverview.jsx
+│   │   ├── Diagnostic/
+│   │   │   ├── DiagnosticHomePage.jsx
+│   │   │   ├── DiagnosticNavbar.jsx
+│   │   │   ├── DiagnosticProfile.jsx
+│   │   │   ├── DiagnosticReportsServices.jsx
+│   │   │   └── DiagnosticTestsServices.jsx
+│   │   └── Admin/
+│   │       ├── AdminHomePage.jsx
+│   │       ├── AdminNavbar.jsx
+│   │       ├── AdminHome.jsx
+│   │       ├── AdminProfile.jsx
+│   │       ├── AdminUsersServices.jsx
+│   │       ├── AdminUsersOverview.jsx
+│   │       └── VerificationReviewModal.jsx
 │   ├── MediBot/
 │   │   └── MediBot.jsx    # AI chatbot component
 │   ├── components/
-│   │   └── DoctorCard.jsx
+│   │   ├── DoctorCard.jsx
+│   │   └── NotificationBell.jsx  # Notification component
 │   ├── pages/
 │   │   └── commonDashboard.jsx
 │   ├── App.jsx
@@ -774,6 +885,89 @@ MyBot/
 - ✅ Input validation
 - ✅ SQL injection prevention (MongoDB)
 - ✅ XSS protection
+- ✅ Email OTP verification system
+- ✅ Account verification system (Doctors/Diagnostics require admin verification)
+
+---
+
+## 📧 Email System
+
+### **Professional HTML Email Templates**
+- ✅ **Welcome Email**: Sent upon user registration with professional design
+- ✅ **Login Notification**: Sent after each login with timestamp
+- ✅ **OTP Verification**: For email verification (5 min expiry) and password reset (15 min expiry)
+- ✅ **Verification Status**: When account is verified/rejected by admin
+
+All emails use modern HTML templates with:
+- Professional styling and gradients
+- Responsive design
+- Clear call-to-action buttons
+- HospiTex branding
+
+**Implementation**: `HospiTex-Server/utils/emailTemplates.js`
+
+---
+
+## 🔔 Notification System
+
+### **Features**
+- ✅ Real-time notification system across all dashboards
+- ✅ NotificationBell component in all navbars
+- ✅ Mark as read/unread functionality
+- ✅ Delete notifications
+- ✅ Notification counts displayed
+
+### **Notification Types**
+- ✅ Appointment bookings and status changes
+- ✅ Account verification status
+- ✅ Diagnostic test bookings and report completions
+- ✅ Prescription creation
+- ✅ And more...
+
+### **Implementation**
+- Backend: `HospiTex-Server/Controller/notificationController.js`
+- Frontend: `HospiTex-Ui/src/components/NotificationBell.jsx`
+- Schema: Notification model in `HospiTex-Server/models/schema.js`
+
+---
+
+## 🏛️ Pan-India Admin System
+
+### **Hierarchical Structure**
+```
+India
+└── States (36 states/UTs)
+    ├── State Admin (Headquarters - 1 per state)
+    │   └── Manages all districts in the state
+    └── Districts (750+ districts)
+        ├── District Admin (1 per district)
+        │   └── Verifies doctors and diagnostics in their district
+        ├── Doctors (belong to that district)
+        └── Diagnostics (belong to that district)
+```
+
+### **Admin Levels**
+- **State Admin**: 
+  - Manages entire state
+  - Can view all districts
+  - Oversees state-wide operations
+  
+- **District Admin**:
+  - Manages specific district
+  - Verifies doctors and diagnostics in their district only
+  - Location-based access control
+
+### **Verification System**
+- **Patients**: Auto-verified upon signup
+- **Doctors**: Require District Admin verification
+- **Diagnostics**: Require District Admin verification
+- **Admins**: Auto-verified
+
+### **Verification Review Process**
+- Detailed verification review modal
+- Shows comprehensive user and profile information
+- Admin can review before approving/rejecting
+- Professional UI for verification workflow
 
 ---
 
@@ -857,18 +1051,22 @@ MyBot/
 
 ## 🎯 Key Features Summary
 
-1. **Three Separate Dashboards** - Patient, Doctor, Diagnostic
-2. **Complete Appointment System** - Booking, confirmation, tracking
-3. **Prescription Management** - Create and view prescriptions
-4. **Diagnostic Services** - Test booking and report management
-5. **Ambulance Services** - Emergency request system
-6. **AI Chatbot (MediBot)** - Hospital assistant with knowledge base
-7. **User Authentication** - Secure login/registration
-8. **Profile Management** - Update user information
-9. **Modern UI** - Beautiful, responsive design
-10. **Real-time Updates** - Live status changes
-11. **Email Notifications** - Automated email sending
-12. **Role-based Access** - Secure authorization
+1. **Four Separate Dashboards** - Patient, Doctor, Diagnostic, Admin
+2. **Pan-India Admin System** - State and District admin hierarchy
+3. **Complete Appointment System** - Auto-confirmed booking, tracking
+4. **Prescription Management** - Create and view prescriptions
+5. **Diagnostic Services** - Test booking and report management
+6. **Ambulance Services** - Emergency request system
+7. **AI Chatbot (MediBot)** - Hospital assistant with knowledge base
+8. **User Authentication** - Secure login/registration with OTP
+9. **Professional Email System** - HTML email templates
+10. **Notification System** - Real-time notifications across all dashboards
+11. **Verification System** - Admin verification for doctors and diagnostics
+12. **Profile Management** - Update user information
+13. **Modern UI** - Beautiful, responsive design with sidebar navigation (Doctor)
+14. **Real-time Updates** - Live status changes
+15. **Email Notifications** - Professional automated email sending
+16. **Role-based Access** - Secure authorization
 
 ---
 

@@ -26,6 +26,7 @@ const Login = () => {
     if (UserRole === 'Patient') navigate('/patient-dashboard');
     else if (UserRole === 'Doctor') navigate('/doctor-dashboard');
     else if (UserRole === 'Diagnostic') navigate('/diagnostic-dashboard');
+    else if (UserRole === 'Admin') navigate('/admin-dashboard');
   }, [IsLoggedIn, UserRole, navigate]);
 
   // Handle SignUp
@@ -64,6 +65,7 @@ const Login = () => {
       if (role === 'Patient') navigate('/patient-dashboard');
       else if (role === 'Doctor') navigate('/doctor-dashboard');
       else if (role === 'Diagnostic') navigate('/diagnostic-dashboard');
+      else if (role === 'Admin') navigate('/admin-dashboard');
 
     } catch (error) {
       toast.error(error.response?.data?.message || "Signup failed");
@@ -104,6 +106,7 @@ const Login = () => {
       if (role === 'Patient') navigate('/patient-dashboard');
       else if (role === 'Doctor') navigate('/doctor-dashboard');
       else if (role === 'Diagnostic') navigate('/diagnostic-dashboard');
+      else if (role === 'Admin') navigate('/admin-dashboard');
 
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid credentials");
@@ -293,6 +296,7 @@ const Login = () => {
                       <option value="Patient">Patient</option>
                       <option value="Doctor">Doctor</option>
                       <option value="Diagnostic">Diagnostic</option>
+                      <option value="Admin">Admin</option>
                     </select>
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                       <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

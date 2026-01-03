@@ -2,22 +2,42 @@ import React, { useState } from "react";
 import { Microscope, Stethoscope, FlaskConical, MapPin } from "lucide-react";
 
 const DiagnosticProfile = () => {
-  const labName = "Apollo Diagnostic Lab";
-  const headName = "Dr. Anjali Sharma";
-  const established = "2005";
-  const location = "Connaught Place, New Delhi";
-  const contact = "+91 9876543210";
-  const email = "info@mediscan.com";
-  const hours = "Mon - Sun: 7 AM - 9 PM";
-  const accreditation = "NABL Accredited";
+
+  // These will be populated via auth / API later
+  const [profile, setProfile] = useState({
+    labName: "",
+    headName: "",
+    established: "",
+    location: "",
+    contact: "",
+    email: "",
+    hours: "",
+    accreditation: "",
+  });
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfile(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // later you'll send this to API
+    console.log("Diagnostic Profile Updated:", profile);
+
+    setIsOpen(false);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-purple-100 via-indigo-100 to-white">
+      
       {/* Main Content */}
       <main className="flex-grow flex justify-center items-center p-6">
         <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-6xl flex gap-8 items-start">
+
           {/* Left Side */}
           <div className="flex flex-col items-center w-1/3 space-y-4">
             <img
@@ -25,11 +45,19 @@ const DiagnosticProfile = () => {
               alt="Lab Logo"
               className="w-28 h-28 rounded-full border-4 border-indigo-600 bg-gray-100"
             />
+
             <h3 className="text-2xl font-semibold mt-2 text-gray-800">
-              {labName}
+              {profile.labName || "Lab Name"}
             </h3>
-            <p className="text-gray-600 mt-1">Head: {headName}</p>
-            <p className="text-gray-500 text-sm">Since {established}</p>
+
+            <p className="text-gray-600 mt-1">
+              Head: {profile.headName || "—"}
+            </p>
+
+            <p className="text-gray-500 text-sm">
+              Since {profile.established || "—"}
+            </p>
+
             <img
               src="/Pictures/lab1.png"
               alt="Lab Facility"
@@ -38,25 +66,34 @@ const DiagnosticProfile = () => {
           </div>
 
           {/* Right Side */}
-          <div className="flex flex-col w-2/3 space-y-4">
+          <div className="flex flex-col w-2/3 space-y-3">
             <p className="text-indigo-700 font-medium text-lg">
               Diagnostic Laboratory
             </p>
+
             <p className="text-gray-700">
-              <span className="font-semibold">Location:</span> {location}
+              <span className="font-semibold">Location:</span>{" "}
+              {profile.location || "—"}
             </p>
+
             <p className="text-gray-700">
-              <span className="font-semibold">Contact:</span> {contact}
+              <span className="font-semibold">Contact:</span>{" "}
+              {profile.contact || "—"}
             </p>
+
             <p className="text-gray-700">
-              <span className="font-semibold">Email:</span> {email}
+              <span className="font-semibold">Email:</span>{" "}
+              {profile.email || "—"}
             </p>
+
             <p className="text-gray-700">
-              <span className="font-semibold">Working Hours:</span> {hours}
+              <span className="font-semibold">Working Hours:</span>{" "}
+              {profile.hours || "—"}
             </p>
+
             <p className="text-gray-700">
               <span className="font-semibold">Accreditation:</span>{" "}
-              {accreditation}
+              {profile.accreditation || "—"}
             </p>
 
             {/* Services Section */}
@@ -109,10 +146,11 @@ const DiagnosticProfile = () => {
         </div>
       </footer>
 
-      {/* Popup Modal */}
+      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-96 p-6 rounded-xl shadow-xl relative">
+            
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
@@ -124,53 +162,77 @@ const DiagnosticProfile = () => {
               Edit Lab Profile
             </h2>
 
-            <form className="flex flex-col gap-3">
+            <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+              
               <input
                 type="text"
+                name="labName"
+                value={profile.labName}
+                onChange={handleChange}
                 placeholder="Lab Name"
-                defaultValue={labName}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
-                placeholder="Head/Incharge"
-                defaultValue={headName}
+                name="headName"
+                value={profile.headName}
+                onChange={handleChange}
+                placeholder="Head / Incharge"
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
+                name="established"
+                value={profile.established}
+                onChange={handleChange}
                 placeholder="Established Year"
-                defaultValue={established}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
+                name="location"
+                value={profile.location}
+                onChange={handleChange}
                 placeholder="Location"
-                defaultValue={location}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
-                placeholder="Contact"
-                defaultValue={contact}
+                name="contact"
+                value={profile.contact}
+                onChange={handleChange}
+                placeholder="Contact Number"
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="email"
+                name="email"
+                value={profile.email}
+                onChange={handleChange}
                 placeholder="Email"
-                defaultValue={email}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
+                name="hours"
+                value={profile.hours}
+                onChange={handleChange}
                 placeholder="Working Hours"
-                defaultValue={hours}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
+
               <input
                 type="text"
+                name="accreditation"
+                value={profile.accreditation}
+                onChange={handleChange}
                 placeholder="Accreditation"
-                defaultValue={accreditation}
                 className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               />
 
@@ -180,6 +242,7 @@ const DiagnosticProfile = () => {
               >
                 Save Changes
               </button>
+
             </form>
           </div>
         </div>

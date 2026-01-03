@@ -1,4 +1,4 @@
-import { User, Patient, Doctor, Diagnostic } from '../models/schema.js';
+import { User, Patient, Doctor, Diagnostic, Admin } from '../models/schema.js';
 
 // ======================== CREATE USER PROFILE ========================
 export const createUserProfile = async (req, res) => {
@@ -34,6 +34,13 @@ export const createUserProfile = async (req, res) => {
         await diagnostic.save();
         return res.status(201).json({ success: true, message: "Diagnostic profile created", profile: diagnostic });
       }
+    } else if (user.role === "Admin") {
+      existingProfile = await Admin.findOne({ user: userId });
+      if (!existingProfile) {
+        const admin = new Admin({ user: userId });
+        await admin.save();
+        return res.status(201).json({ success: true, message: "Admin profile created", profile: admin });
+      }
     }
 
     return res.status(200).json({ success: true, message: "Profile already exists", profile: existingProfile });
@@ -61,6 +68,8 @@ export const getUserProfile = async (req, res) => {
       profile = await Doctor.findOne({ user: userId }).populate('appointments').populate('prescriptions');
     } else if (user.role === "Diagnostic") {
       profile = await Diagnostic.findOne({ user: userId }).populate('diagnosticReports');
+    } else if (user.role === "Admin") {
+      profile = await Admin.findOne({ user: userId });
     }
 
     return res.status(200).json({

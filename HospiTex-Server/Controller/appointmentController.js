@@ -1,4 +1,53 @@
 import { Appointment, User, Patient, Doctor } from '../models/schema.js';
+import { createNotification } from './notificationController.js';
+
+// ======================== GET AVAILABLE SLOTS ========================
+export const getAvailableSlots = async (req, res) => {
+  try {
+    const { doctorId, date } = req.query;
+
+    if (!doctorId || !date) {
+      return res.status(400).json({ success: false, message: "Doctor ID and date are required" });
+    }
+
+    const doctor = await Doctor.findOne({ user: doctorId });
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: "Doctor not found" });
+    }
+
+    // Get doctor's availability slots
+    const defaultSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"];
+    const allSlots = doctor.availability?.length ? doctor.availability : defaultSlots;
+
+    // Get booked appointments for this doctor on this date
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookedAppointments = await Appointment.find({
+      doctor: doctorId,
+      date: { $gte: startOfDay, $lte: endOfDay },
+      status: { $in: ["Pending", "Confirmed"] }
+    }).select('time');
+
+    const bookedTimes = bookedAppointments.map(apt => apt.time);
+
+    // Filter out booked slots
+    const availableSlots = allSlots.filter(slot => !bookedTimes.includes(slot));
+
+    return res.status(200).json({
+      success: true,
+      availableSlots,
+      allSlots,
+      bookedSlots: bookedTimes
+    });
+
+  } catch (error) {
+    console.error("Get available slots error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 // ======================== BOOK APPOINTMENT ========================
 export const bookAppointment = async (req, res) => {
@@ -20,6 +69,28 @@ export const bookAppointment = async (req, res) => {
       return res.status(404).json({ success: false, message: "Doctor not found" });
     }
 
+    // Check if slot is still available
+    const appointmentDate = new Date(date);
+    const startOfDay = new Date(appointmentDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(appointmentDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const existingAppointment = await Appointment.findOne({
+      doctor: doctorId,
+      date: { $gte: startOfDay, $lte: endOfDay },
+      time: time,
+      status: { $in: ["Pending", "Confirmed"] }
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "This time slot is already booked. Please select another time." 
+      });
+    }
+
+    // Create appointment with "Confirmed" status (no admin approval needed)
     const appointment = new Appointment({
       patient: userId,
       doctor: doctorId,
@@ -32,7 +103,7 @@ export const bookAppointment = async (req, res) => {
       doctorSpecialty: doctorSpecialty || "",
       doctorLocation: doctorLocation || "",
       doctorImage: doctorImage || "",
-      status: "Pending"
+      status: "Confirmed" // Auto-confirmed, doctor can change if needed
     });
 
     await appointment.save();
@@ -44,6 +115,28 @@ export const bookAppointment = async (req, res) => {
     // Add to doctor's appointments
     doctor.appointments.push(appointment._id);
     await doctor.save();
+
+    // Get patient user info for notification
+    const patientUser = await User.findById(userId);
+
+    // Create notifications
+    await createNotification(
+      doctorId,
+      "New Appointment Booking",
+      `${patientUser?.username || 'A patient'} has booked an appointment with you on ${new Date(date).toLocaleDateString()} at ${time}`,
+      "appointment",
+      `/doctor-dashboard/appointment-services`,
+      appointment._id
+    );
+
+    await createNotification(
+      userId,
+      "Appointment Confirmed",
+      `Your appointment with ${doctorName || 'the doctor'} is confirmed for ${new Date(date).toLocaleDateString()} at ${time}`,
+      "success",
+      `/patient-dashboard/appointment-history`,
+      appointment._id
+    );
 
     return res.status(201).json({
       success: true,
@@ -121,6 +214,36 @@ export const updateAppointmentStatus = async (req, res) => {
     appointment.status = status;
     if (notes) appointment.notes = notes;
     await appointment.save();
+
+    // Notify patient when doctor updates appointment status
+    if (status === "Confirmed") {
+      await createNotification(
+        appointment.patient,
+        "Appointment Confirmed",
+        `Your appointment with ${appointment.doctorName || 'the doctor'} on ${new Date(appointment.date).toLocaleDateString()} has been confirmed`,
+        "success",
+        `/patient-dashboard/appointment-history`,
+        appointment._id
+      );
+    } else if (status === "Completed") {
+      await createNotification(
+        appointment.patient,
+        "Appointment Completed",
+        `Your appointment on ${new Date(appointment.date).toLocaleDateString()} has been marked as completed`,
+        "info",
+        `/patient-dashboard/appointment-history`,
+        appointment._id
+      );
+    } else if (status === "Cancelled") {
+      await createNotification(
+        appointment.patient,
+        "Appointment Cancelled",
+        `Your appointment on ${new Date(appointment.date).toLocaleDateString()} has been cancelled`,
+        "warning",
+        `/patient-dashboard/appointment-history`,
+        appointment._id
+      );
+    }
 
     return res.status(200).json({
       success: true,

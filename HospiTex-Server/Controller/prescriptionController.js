@@ -1,4 +1,5 @@
 import { Prescription, User, Patient, Doctor, Appointment } from '../models/schema.js';
+import { createNotification } from './notificationController.js';
 
 // ======================== CREATE PRESCRIPTION ========================
 export const createPrescription = async (req, res) => {
@@ -39,6 +40,19 @@ export const createPrescription = async (req, res) => {
         await appointment.save();
       }
     }
+
+    // Get doctor user info
+    const doctorUser = await User.findById(userId);
+
+    // Notify patient about new prescription
+    await createNotification(
+      patientId,
+      "New Prescription",
+      `Dr. ${doctorUser?.username || 'Your doctor'} has created a new prescription for you. Click to view details.`,
+      "info",
+      `/patient-dashboard/appointment-history`,
+      appointmentId || prescription._id
+    );
 
     return res.status(201).json({
       success: true,

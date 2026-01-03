@@ -16,16 +16,10 @@ function DiagnosticHome() {
       icon: <FlaskRound className="w-8 h-8 text-indigo-700" />,
       description: "Check pending tests and schedule new ones efficiently."
     },
-    {
-      title: "Contacts",
-      path: "/diagnostic-dashboard/contacts",
-      icon: <Phone className="w-8 h-8 text-indigo-700" />,
-      description: "Access patient or doctor contacts immediately."
-    },
   ];
 
   return (
-    <section className="min-h-screen w-full bg-gradient-to-tr from-indigo-100 via-indigo-50 to-indigo-200 px-6 py-16 flex flex-col justify-center">
+    <section className="pt-16 min-h-screen w-full bg-gradient-to-tr from-indigo-100 via-indigo-50 to-indigo-200 px-6 py-16 flex flex-col justify-center">
       <div className="flex flex-col md:flex-row items-center w-full">
         <div className="md:w-1/2 space-y-6 text-center md:text-left">
           <h1 className="text-5xl font-extrabold text-indigo-900 leading-tight">

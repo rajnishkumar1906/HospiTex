@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock, DollarSign, Award, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, DollarSign, Award, MapPin, Loader } from 'lucide-react';
 import apiClient from "../config/axios";
 
 const defaultSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"];
@@ -11,10 +11,54 @@ const DoctorCard = ({ doctor, goBack, onBooked }) => {
   const [selectedTime, setSelectedTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [allSlots, setAllSlots] = useState([]);
 
   if (!doctor) return null;
 
-  const timeSlots = doctor.availability?.length ? doctor.availability : defaultSlots;
+  // Initialize slots from doctor availability
+  useEffect(() => {
+    const initialSlots = doctor.availability?.length ? doctor.availability : defaultSlots;
+    setAllSlots(initialSlots);
+    if (!selectedDate) {
+      setAvailableSlots(initialSlots);
+    }
+  }, [doctor.availability]);
+
+  // Fetch available slots when date is selected
+  useEffect(() => {
+    if (selectedDate && doctor.userId) {
+      fetchAvailableSlots();
+    } else {
+      setAvailableSlots([]);
+    }
+  }, [selectedDate, doctor.userId]);
+
+  const fetchAvailableSlots = async () => {
+    try {
+      setLoadingSlots(true);
+      const response = await apiClient.get('/api/appointments/available-slots', {
+        params: {
+          doctorId: doctor.userId,
+          date: selectedDate
+        }
+      });
+
+      if (response.data.success) {
+        setAvailableSlots(response.data.availableSlots);
+        setAllSlots(response.data.allSlots);
+      }
+    } catch (error) {
+      console.error('Error fetching available slots:', error);
+      // Fallback to all slots if API fails
+      const fallbackSlots = doctor.availability?.length ? doctor.availability : defaultSlots;
+      setAllSlots(fallbackSlots);
+      setAvailableSlots(fallbackSlots);
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
 
   const bookAppointment = () => {
     if (!selectedDate || !selectedTime) {
@@ -167,24 +211,50 @@ const DoctorCard = ({ doctor, goBack, onBooked }) => {
               <label className="flex items-center gap-2 text-gray-900 font-bold mb-3">
                 <Clock className="w-5 h-5 text-emerald-600" />
                 Select Time
+                {selectedDate && loadingSlots && (
+                  <Loader className="w-4 h-4 text-emerald-600 animate-spin ml-2" />
+                )}
               </label>
-              <div className="grid grid-cols-3 gap-3">
-                {timeSlots.map((slot, idx) => (
-                  <motion.button
-                    key={idx}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedTime(slot)}
-                    className={`p-3 rounded-xl border-2 font-semibold text-sm transition-all ${
-                      selectedTime === slot
-                        ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-lg"
-                        : "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300"
-                    }`}
-                  >
-                    {slot}
-                  </motion.button>
-                ))}
-              </div>
+              {!selectedDate ? (
+                <p className="text-sm text-gray-500 mb-3">Please select a date first to see available time slots</p>
+              ) : (
+                <>
+                  {availableSlots.length === 0 && !loadingSlots ? (
+                    <p className="text-sm text-red-600 mb-3">No available slots for this date. Please select another date.</p>
+                  ) : (
+                    <p className="text-sm text-emerald-600 mb-3">
+                      {availableSlots.length} slot{availableSlots.length !== 1 ? 's' : ''} available
+                    </p>
+                  )}
+                  <div className="grid grid-cols-3 gap-3">
+                    {allSlots.map((slot, idx) => {
+                      const isAvailable = availableSlots.includes(slot);
+                      const isSelected = selectedTime === slot;
+                      
+                      return (
+                        <motion.button
+                          key={idx}
+                          whileHover={isAvailable ? { scale: 1.05 } : {}}
+                          whileTap={isAvailable ? { scale: 0.95 } : {}}
+                          onClick={() => isAvailable && setSelectedTime(slot)}
+                          disabled={!isAvailable}
+                          className={`p-3 rounded-xl border-2 font-semibold text-sm transition-all ${
+                            isSelected
+                              ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-lg"
+                              : isAvailable
+                              ? "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 cursor-pointer"
+                              : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-60"
+                          }`}
+                          title={!isAvailable ? "This slot is already booked" : "Click to select"}
+                        >
+                          {slot}
+                          {!isAvailable && <span className="block text-xs mt-1">Booked</span>}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
 
             {submitError && (

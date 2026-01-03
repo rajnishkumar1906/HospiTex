@@ -5,6 +5,10 @@ import re
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 class MultiLLM:
@@ -26,6 +30,9 @@ class MultiLLM:
         
         # List of models to try in order (free tier models)
         self.models = [
+            "amazon/nova-2-lite-v1:free",
+            "arcee-ai/trinity-mini:free",
+            "allenai/olmo-3-32b-think:free",
             "tngtech/deepseek-r1t2-chimera:free",
             "deepseek/deepseek-chat-v3-0324:free", 
             "mistralai/mistral-small-3.2-24b-instruct:free",
