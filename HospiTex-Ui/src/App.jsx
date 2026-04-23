@@ -1,531 +1,68 @@
-// import React, { useContext } from 'react';
-// import { Routes, Route, Navigate } from 'react-router-dom';
-// import { AppContext } from './Auth/AppContext';
-// import { ToastContainer } from 'react-toastify';
-// import "react-toastify/dist/ReactToastify.css";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { AppProvider } from './context/AppContext';
+import './index.css';
 
-// // Components imports...
-// import Login from './Auth/Login';
-// import CommonDashboard from './pages/commonDashboard'
+// Auth Components
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import EmailVerify from './pages/EmailVerify';
 
-// // Patient Imports
-// import HomePage from './Users/Patient/HomePage';
-// import PatientProfile from './Users/Patient/PatientProfile';
-// import DiagnosticServices from './Users/Patient/Services/DiagnosticServices';
-// import AppointmentServices from './Users/Patient/Services/appointmentService';
-// import AmbulanceServices from './Users/Patient/Services/AmbulanceServices';
-// import AppointmentHistory from './Users/Patient/AppointmentHistory';
+// Dashboard Components
+import PatientDashboard from './pages/PatientDashboard';
+import DoctorDashboard from './pages/DoctorDashboard';
+import DiagnosticDashboard from './pages/DiagnosticDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
-// // Doctor Imports
-// import DoctorHomePage from './Users/Doctor/DoctorHomePage';
-// import DoctorAppointmentServices from './Users/Doctor/DoctorAppointmentServices';
-// import DoctorPatientRecordsServices from './Users/Doctor/DoctorPatientRecordsServices';
-// import DoctorProfile from './Users/Doctor/DoctorProfile';
+// Components
+import ProtectedRoute from './components/ProtectedRoute';
+import MediBot from './components/MediBot';
 
-// // Diagnostic Imports
-// import DiagnosticHomePage from './Users/Diagnostic/DiagnosticHomePage';
-// import DiagnosticReportsServices from './Users/Diagnostic/DiagnosticReportsServices';
-// import DiagnosticTestsServices from './Users/Diagnostic/DiagnosticTestsServices';
-// import DiagnosticProfile from './Users/Diagnostic/DiagnosticProfile';
-
-// function App() {
-//   const { IsLoggedIn, UserRole, authLoading } = useContext(AppContext);
-
-//   // REMOVED: The problematic useEffect that caused redirect loops
-
-//   // Protected Route Component
-//   const PrivateRoute = ({ children, role }) => {
-//     if (authLoading) {
-//       return (
-//         <div className="min-h-screen flex items-center justify-center">
-//           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-//         </div>
-//       );
-//     }
-//     if (!IsLoggedIn || UserRole !== role) {
-//       return <Navigate to="/" replace />;
-//     }
-//     return children;
-//   };
-
-//   // Show loading while checking authentication
-//   if (authLoading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-//         <div className="text-center">
-//           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-//           <p className="text-gray-600">Loading...</p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen flex flex-col bg-gray-50 scroll-smooth">
-//       {/* REMOVED: renderNavbar() - Navbars are now inside their respective pages */}
-      
-//       <Routes>
-//         {/* ======================= Public Routes ======================= */}
-//         <Route path='/login' element={<Login />} />
-//         <Route path="/" element={<CommonDashboard />} />
-
-//         {/* ======================= Patient Routes ======================= */}
-//         <Route
-//           path="/patient-dashboard"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <HomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/appointment-booking"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <HomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/diagnostic"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <HomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/ambulance"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <HomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/contacts"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <HomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/patientprofile"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <PatientProfile />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/diagnostic-services"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <DiagnosticServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/appointment-services"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <AppointmentServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/patient-dashboard/ambulance-services"
-//           element={
-//             <PrivateRoute role="Patient">
-//               <AmbulanceServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path='/patient-dashboard/appointment-history'
-//           element={
-//             <PrivateRoute role="Patient">
-//               <AppointmentHistory />
-//             </PrivateRoute>
-//           }
-//         />
-
-//         {/* ======================= Doctor Routes ======================= */}
-//         <Route
-//           path="/doctor-dashboard"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/booked-appointments"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/records"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/doctor-contacts"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/appointment-services"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorAppointmentServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/patient-records"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorPatientRecordsServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/doctor-dashboard/profile"
-//           element={
-//             <PrivateRoute role="Doctor">
-//               <DoctorProfile />
-//             </PrivateRoute>
-//           }
-//         />
-
-//         {/* ======================= Diagnostic Routes ======================= */}
-//         <Route
-//           path="/diagnostic-dashboard"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/reports"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/tests"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/contacts"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticHomePage />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/diagnostic-profile"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticProfile />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/reports-services"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticReportsServices />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route
-//           path="/diagnostic-dashboard/tests-services"
-//           element={
-//             <PrivateRoute role="Diagnostic">
-//               <DiagnosticTestsServices />
-//             </PrivateRoute>
-//           }
-//         />
-
-//         {/* ======================= Default Route ======================= */}
-//         <Route path="*" element={<Navigate to="/" replace />} />
-//       </Routes>
-
-//       <ToastContainer
-//         position="top-right"
-//         autoClose={3000}
-//         hideProgressBar={false}
-//         newestOnTop={false}
-//         closeOnClick
-//         rtl={false}
-//         pauseOnFocusLoss
-//         draggable
-//         pauseOnHover
-//         theme="light"
-//       />
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-
-import React, { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { AppContext } from "./Auth/AppContext";
-
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-/* ---------------- Public Pages ---------------- */
-import Login from "./Auth/Login";
-import CommonDashboard from "./pages/commonDashboard";
-
-/* ---------------- Patient Pages ---------------- */
-import HomePage from "./Users/Patient/HomePage";
-import PatientProfile from "./Users/Patient/PatientProfile";
-import DiagnosticServices from "./Users/Patient/Services/DiagnosticServices";
-import AppointmentServices from "./Users/Patient/Services/appointmentService";
-import AmbulanceServices from "./Users/Patient/Services/AmbulanceServices";
-import AppointmentHistory from "./Users/Patient/AppointmentHistory";
-
-/* ---------------- Doctor Pages ---------------- */
-import DoctorHomePage from "./Users/Doctor/DoctorHomePage";
-import DoctorAppointmentServices from "./Users/Doctor/DoctorAppointmentServices";
-import DoctorPatientRecordsServices from "./Users/Doctor/DoctorPatientRecordsServices";
-import DoctorProfile from "./Users/Doctor/DoctorProfile";
-
-/* ---------------- Diagnostic Pages ---------------- */
-import DiagnosticHomePage from "./Users/Diagnostic/DiagnosticHomePage";
-import DiagnosticReportsServices from "./Users/Diagnostic/DiagnosticReportsServices";
-import DiagnosticTestsServices from "./Users/Diagnostic/DiagnosticTestsServices";
-import DiagnosticProfile from "./Users/Diagnostic/DiagnosticProfile";
-
-/* ---------------- Admin Pages ---------------- */
-import AdminHomePage from "./Users/Admin/AdminHomePage";
-import AdminUsersServices from "./Users/Admin/AdminUsersServices";
-import AdminProfile from "./Users/Admin/AdminProfile";
-
-/* =====================================================
-   Private Route Wrapper
-===================================================== */
-
-const PrivateRoute = ({ role, children }) => {
-  const { IsLoggedIn, UserRole, authLoading } = useContext(AppContext);
-
-  // auth still loading
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // not logged in or wrong role
-  if (!IsLoggedIn || UserRole !== role) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
-
-/* =====================================================
-   APP
-===================================================== */
-
-export default function App() {
+function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 scroll-smooth">
-
-      <Routes>
-
-        {/* ================= PUBLIC ROUTES ================= */}
-        <Route path="/" element={<CommonDashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/login/" element={<Login />} />
-
-        {/* ================= PATIENT DASHBOARD ================= */}
-
-        {/* Dashboard + Section Scroll Routes */}
-        <Route
-          path="/patient-dashboard"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/appointment-booking"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/diagnostic"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/ambulance"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/contacts"
-          element={<PrivateRoute role="Patient"><HomePage /></PrivateRoute>}
-        />
-
-        {/* Stand-alone Patient Pages */}
-        <Route
-          path="/patient-dashboard/patientprofile"
-          element={<PrivateRoute role="Patient"><PatientProfile /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/diagnostic-services"
-          element={<PrivateRoute role="Patient"><DiagnosticServices /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/appointment-services"
-          element={<PrivateRoute role="Patient"><AppointmentServices /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/ambulance-services"
-          element={<PrivateRoute role="Patient"><AmbulanceServices /></PrivateRoute>}
-        />
-        <Route
-          path="/patient-dashboard/appointment-history"
-          element={<PrivateRoute role="Patient"><AppointmentHistory /></PrivateRoute>}
-        />
-
-        {/* ================= DOCTOR DASHBOARD ================= */}
-
-        {/* Dashboard + Section Scroll Routes */}
-        <Route
-          path="/doctor-dashboard"
-          element={<PrivateRoute role="Doctor"><DoctorHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/doctor-dashboard/"
-          element={<PrivateRoute role="Doctor"><DoctorHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/doctor-dashboard/booked-appointments"
-          element={<PrivateRoute role="Doctor"><DoctorHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/doctor-dashboard/records"
-          element={<PrivateRoute role="Doctor"><DoctorHomePage /></PrivateRoute>}
-        />
-
-        {/* Stand-alone Doctor Pages */}
-        <Route
-          path="/doctor-dashboard/appointment-services"
-          element={<PrivateRoute role="Doctor"><DoctorAppointmentServices /></PrivateRoute>}
-        />
-        <Route
-          path="/doctor-dashboard/patient-records"
-          element={<PrivateRoute role="Doctor"><DoctorPatientRecordsServices /></PrivateRoute>}
-        />
-        <Route
-          path="/doctor-dashboard/profile"
-          element={<PrivateRoute role="Doctor"><DoctorProfile /></PrivateRoute>}
-        />
-
-        {/* ================= DIAGNOSTIC DASHBOARD ================= */}
-
-        {/* Dashboard + Section Scroll Routes */}
-        <Route
-          path="/diagnostic-dashboard"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/diagnostic-dashboard/"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/diagnostic-dashboard/reports"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/diagnostic-dashboard/tests"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticHomePage /></PrivateRoute>}
-        />
-
-        {/* Stand-alone Diagnostic Pages */}
-        <Route
-          path="/diagnostic-dashboard/diagnostic-profile"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticProfile /></PrivateRoute>}
-        />
-        <Route
-          path="/diagnostic-dashboard/reports-services"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticReportsServices /></PrivateRoute>}
-        />
-        <Route
-          path="/diagnostic-dashboard/tests-services"
-          element={<PrivateRoute role="Diagnostic"><DiagnosticTestsServices /></PrivateRoute>}
-        />
-
-        {/* ================= ADMIN DASHBOARD ================= */}
-
-        {/* Dashboard + Section Scroll Routes */}
-        <Route
-          path="/admin-dashboard"
-          element={<PrivateRoute role="Admin"><AdminHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/admin-dashboard/"
-          element={<PrivateRoute role="Admin"><AdminHomePage /></PrivateRoute>}
-        />
-        <Route
-          path="/admin-dashboard/users"
-          element={<PrivateRoute role="Admin"><AdminHomePage /></PrivateRoute>}
-        />
-
-        {/* Stand-alone Admin Pages */}
-        <Route
-          path="/admin-dashboard/users-services"
-          element={<PrivateRoute role="Admin"><AdminUsersServices /></PrivateRoute>}
-        />
-        <Route
-          path="/admin-dashboard/profile"
-          element={<PrivateRoute role="Admin"><AdminProfile /></PrivateRoute>}
-        />
-
-        {/* ================= DEFAULT REDIRECT ================= */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-
-      </Routes>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        pauseOnHover
-        draggable
-        theme="light"
-      />
-
-    </div>
+    <AppProvider>
+      <Router>
+        <Toaster position="top-right" />
+        <MediBot />
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-email" element={<EmailVerify />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/patient/*" element={
+            <ProtectedRoute allowedRoles={['Patient']}>
+              <PatientDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/doctor/*" element={
+            <ProtectedRoute allowedRoles={['Doctor']}>
+              <DoctorDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/diagnostic/*" element={
+            <ProtectedRoute allowedRoles={['Diagnostic']}>
+              <DiagnosticDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/*" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }
+
+export default App;

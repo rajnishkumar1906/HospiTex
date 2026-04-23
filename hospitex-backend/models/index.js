@@ -1,0 +1,13 @@
+﻿export { User } from './user.model.js';
+export { Patient } from './patient.model.js';
+export { Doctor } from './doctor.model.js';
+export { Diagnostic } from './diagnostic.model.js';
+export { Admin } from './admin.model.js';
+export { Appointment } from './appointment.model.js';
+export { Prescription } from './prescription.model.js';
+export { DiagnosticReport } from './diagnosticReport.model.js';
+export { Ambulance } from './ambulance.model.js';
+export { Notification } from './notification.model.js';
+export { Rating } from './rating.model.js';
+export { Payment } from './payment.model.js';
+export { Consultation } from './consultation.model.js';

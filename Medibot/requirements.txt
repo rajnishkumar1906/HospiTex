@@ -1,0 +1,13 @@
+chromadb
+sentence-transformers
+langchain
+langchain-community
+python-dotenv
+requests
+numpy
+pandas
+scikit-learn
+tqdm
+flask
+flask-cors
+flask-sqlalchemy

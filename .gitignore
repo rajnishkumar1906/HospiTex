@@ -7,19 +7,19 @@ HospiTex-Ui/node_modules/
 .env
 HospiTex-Server/.env
 HospiTex-Ui/.env
-MyBot/.env
+Medibot/.env
 
 # Python
 venv/
-MyBot/venv/
+Medibot/venv/
 __pycache__/
 *.pyc
 
 # Database
 *.db
 *.sqlite3
-MyBot/database/medibot.db
-MyBot/data/vector_store/
+Medibot/database/medibot.db
+Medibot/data/vector_store/
 
 # Logs
 *.log

@@ -1,0 +1,55 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #e6f2f5;
+  --color-primary-100: #cce5eb;
+  --color-primary-200: #99cbd6;
+  --color-primary-300: #66b1c2;
+  --color-primary-400: #3397ad;
+  --color-primary-500: #2c7da0;
+  --color-primary-600: #236480;
+  --color-primary-700: #1a4b60;
+  --color-primary-800: #123240;
+  --color-primary-900: #091920;
+  
+  --animate-fade-in: fade-in 0.5s ease-in-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-all duration-300 transform hover:scale-105 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition-all duration-300;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300 animate-fade-in;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+  }
+}
